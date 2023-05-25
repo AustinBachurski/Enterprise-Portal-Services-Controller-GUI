@@ -39,9 +39,7 @@ Services::Services(const std::string& username, const std::string& password, con
 	}
 	else
 	{
-		m_statusTime = "Credentials were not found, please restart the tool and "
-			"enter your Enterprise Portal credentials when prompted.\n"
-			"Tool functionality has been disabled for this session.";
+		m_statusTime = Constants::Messages::credentialsNotFound;
 	}
 }
 
@@ -337,7 +335,6 @@ void Services::timeStamp()
 	// Format time as Hours:Minutes:AM/PM - 12 hour.
 	std::string time = std::format("{:%I:%M %p}", now);
 
-	// Remove leading '0' from time.
 	if (time.front() == '0')
 	{
 		time.erase(0, 1);
