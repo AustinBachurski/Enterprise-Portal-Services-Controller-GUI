@@ -56,6 +56,16 @@ namespace Constants
 	// Modal window text. 
 	namespace Messages
 	{
+		/*
+		Credentials were not found, please restart the tool and
+		 enter your Enterprise Portal credentials whe prompted.
+		 Tool functionality has been disabled for this session.
+		*/
+		inline const std::string_view credentialsNotFound{
+			"Credentials were not found, please restart the tool and "
+			"enter your Enterprise Portal credentials when prompted.\n"
+			"Tool functionality has been disabled for this session." };
+
 		// START all services on the server? 
 		inline const wxString confirmStart{
 			"START all services on the server?" };
