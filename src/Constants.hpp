@@ -62,7 +62,7 @@ namespace Constants
 		 Tool functionality has been disabled for this session.
 		*/
 		inline const std::string_view credentialsNotFound{
-			"Credentials were not found, please restart the tool and "
+			"Credentials were not found, please restart the tool\nand "
 			"enter your Enterprise Portal credentials when prompted.\n"
 			"Tool functionality has been disabled for this session." };
 
