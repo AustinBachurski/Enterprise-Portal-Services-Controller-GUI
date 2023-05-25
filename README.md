@@ -34,6 +34,7 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
 * Server and service information are displayed in an interactable text frame, a ```right-click``` in the text frame will open the ```Server Status``` menu as a context menu.
 
 ## Image Gallery
+
 |File Menu|Server Status Menu|Server Controls Menu|
 |:-:|:-:|:-:|
 |![fileMenu](screenshots/file_menu.png) |![statusMenu](screenshots/status_menu.png)|![controlsMenu](screenshots/controls_menu.png)
