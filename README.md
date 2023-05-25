@@ -34,11 +34,11 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
 * Server and service information are displayed in an interactable text frame, a ```right-click``` in the text frame will open the ```Server Status``` menu as a context menu.
 
 ## Image Gallery
-
-|   |   |   |
+|File Menu|Server Status Menu|Server Controls Menu|
 |:-:|:-:|:-:|
-|File Menu<br>![fileMenu](screenshots/file_menu.png) |Server Status Menu<br>![statusMenu](screenshots/status_menu.png)|Server Controls Menu<br>![controlsMenu](screenshots/controls_menu.png)
-|Service Status Display<br>![mixedStatus](screenshots/mixed_status.png) |Find Dialog and Context Menu<br>![contextMenu](screenshots/context_menu.png)|Common Popups<br>![refreshProgress](screenshots/refresh_progress.png)<br>![stopPrompt](screenshots/stop_prompt.png)<br>![startPrompt](screenshots/start_prompt.png)<br>![commandProgress](screenshots/command_progress.png)
+|![fileMenu](screenshots/file_menu.png) |![statusMenu](screenshots/status_menu.png)|![controlsMenu](screenshots/controls_menu.png)
+|Service Status Display|Find Dialog & Context Menu|Common Popups|
+|![mixedStatus](screenshots/mixed_status.png) |![contextMenu](screenshots/context_menu.png)|![refreshProgress](screenshots/refresh_progress.png)<br>![stopPrompt](screenshots/stop_prompt.png)<br>![startPrompt](screenshots/start_prompt.png)<br>![commandProgress](screenshots/command_progress.png)
 
 
 ## External Libraries
