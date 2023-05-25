@@ -133,7 +133,7 @@ std::string Services::generateJson(const std::string_view command)
 	{
 		list.replace(list.rfind(','), 2, "]}");
 	}
-	return list;
+	return std::move(list);
 }
 
 const std::string Services::getCountStartedAsString() const
