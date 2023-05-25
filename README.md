@@ -24,14 +24,14 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
 
      ![start](screenshots/start.png)
 
-<br>
-
 ### From here, several menu bar options are available:
 
 * ```File``` menu allows you to update Enterprise Portal Credentials or Quit.
 * ```Server Status``` menu has options for searching for specific text, copying the selected or entire displayed text, refreshing the server status, and filtering the data by service state.
 * ```Server Controls``` menu will spawn a confirmation popup, then send the appropriate command to the server.
 * Server and service information are displayed in an interactable text frame, a ```right-click``` in the text frame will open the ```Server Status``` menu as a context menu.
+
+<br>
 
 ## Image Gallery
 
