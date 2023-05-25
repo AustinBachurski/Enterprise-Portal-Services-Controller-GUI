@@ -31,12 +31,14 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
 * ```Server Controls``` menu will spawn a confirmation popup, then send the appropriate command to the server.
 * Server and service information are displayed in an interactable text frame, a ```right-click``` in the text frame will open the ```Server Status``` menu as a context menu.
 
+<br>
+
 ## Image Gallery
 
 |File Menu|Server Status Menu|Server Controls Menu|
 |:-:|:-:|:-:|
 |![fileMenu](screenshots/file_menu.png) |![statusMenu](screenshots/status_menu.png)|![controlsMenu](screenshots/controls_menu.png)
-|Service Status Display|Find Dialog & Context Menu|Common Popups|
+|<b>Service Status Display</b>|<b>Find Dialog & Context Menu</b>|<b>Common Popups</b>|
 |![mixedStatus](screenshots/mixed_status.png) |![contextMenu](screenshots/context_menu.png)|![refreshProgress](screenshots/refresh_progress.png)<br>![stopPrompt](screenshots/stop_prompt.png)<br>![startPrompt](screenshots/start_prompt.png)<br>![commandProgress](screenshots/command_progress.png)
 
 
