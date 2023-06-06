@@ -96,6 +96,16 @@ std::string Configuration::getUsername() const
     return m_username;
 }
 
+int Configuration::getWindowPositionX() const
+{
+    return m_windowPositionX;
+}
+
+int Configuration::getWindowPositionY() const
+{
+    return m_windowPositionY;
+}
+
 int Configuration::getWindowSizeX() const
 {
     return m_windowSizeX;
