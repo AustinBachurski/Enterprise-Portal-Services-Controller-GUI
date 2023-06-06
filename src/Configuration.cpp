@@ -101,7 +101,6 @@ const wxRect& Configuration::getWindowSettings() const
     return m_window;
 }
 
-
 void Configuration::parseData(std::string& data)
 {
     std::transform(data.cbegin(), data.cend(), data.begin(),
