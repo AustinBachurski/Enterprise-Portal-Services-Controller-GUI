@@ -20,6 +20,8 @@ Frame::Frame(const std::string&& title)
 	SetSize(m_configuration.getWindowSizeX(),
 			m_configuration.getWindowSizeY());
 
+	//SetPosition(wxPoint(123, 456));
+
 	wxPanel* panel = new wxPanel(
 		this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
 	panel->Bind(wxEVT_CHAR_HOOK, &Frame::keyboardShortcuts, this);
@@ -233,9 +235,12 @@ Frame::Frame(const std::string&& title)
 
 Frame::~Frame()
 {
+	wxPoint windowPosition = GetPosition();
 	wxSize windowSize = GetSize();
 	m_configuration.updateConfigSettings(
-		windowSize.x, windowSize.y, m_serverCommandMethod);
+		windowSize.x, windowSize.y,
+		windowPosition.x, windowPosition.y,
+		m_serverCommandMethod);
 }
 
 void Frame::areYouSure(const std::string_view command)
