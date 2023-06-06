@@ -25,25 +25,31 @@ EnterCredentials::EnterCredentials(
         wxTE_PASSWORD | wxTE_PROCESS_ENTER);
     m_passwordEntryBox->Bind(wxEVT_TEXT_ENTER,
         [this, &configuration](wxCommandEvent& event)
-        { captureCredentials(event, configuration); });
+        { 
+            configuration.m_updateCredentials = true;
+            captureCredentials(event, configuration);
+        });
         
     wxButton* OkButton = new wxButton(this, wxID_OK,
         "OK", wxPoint(173, 105), wxSize(85, -1));
     OkButton->Bind(wxEVT_BUTTON, 
         [this, &configuration](wxCommandEvent& event)
-        { captureCredentials(event, configuration); });
+        { 
+            configuration.m_updateCredentials = true;
+            captureCredentials(event, configuration);
+        });
 
     wxButton* cancelButton = new wxButton(this, wxID_CANCEL,
         "Cancel", wxPoint(87, 105), wxSize(85, -1));
     cancelButton->Bind(wxEVT_BUTTON,
-        [this](wxCommandEvent& event)
+        [this, &configuration](wxCommandEvent& event)
         {
             EndModal(wxCANCEL);
             Destroy();
 
             // Window closing would trigger the 'required' popup window
             // regardless of why it closed, m_okPressed prevents this.
-            if (!m_okPressed)
+            if (!m_okPressed && !configuration.credentialsAquired())
             {
                 wxMessageDialog* required = new wxMessageDialog(this,
                     "Tool will not function unless credentials are entered.",
