@@ -42,7 +42,7 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
     3. ```Ctrl + A``` will select all the text in the text box.
     4. ```Ctrl + C``` will copy the selected text from the text box.
  
-* The tool also saves the server command mode and window size settings to the ```config.ini``` file on exit.
+* The tool also saves the server command mode setting, window size, and window position to the ```config.ini``` file on exit.
 
 ## Image Gallery
 
