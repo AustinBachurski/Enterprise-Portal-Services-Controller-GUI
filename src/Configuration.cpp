@@ -96,25 +96,11 @@ std::string Configuration::getUsername() const
     return m_username;
 }
 
-int Configuration::getWindowPositionX() const
+const wxRect& Configuration::getWindowSettings() const
 {
-    return m_windowPositionX;
+    return m_window;
 }
 
-int Configuration::getWindowPositionY() const
-{
-    return m_windowPositionY;
-}
-
-int Configuration::getWindowSizeX() const
-{
-    return m_windowSizeX;
-}
-
-int Configuration::getWindowSizeY() const
-{
-    return m_windowSizeY;
-}
 
 void Configuration::parseData(std::string& data)
 {
@@ -145,21 +131,21 @@ void Configuration::parseData(std::string& data)
             m_passwordAquired = true;
         }
     }
-    else if (data.find("windowSizeX=") != std::string::npos)
+    else if (data.find("windowWidth=") != std::string::npos)
     {
-        m_windowSizeX = std::stoi(data.substr(data.find('=') + 1));
+        m_window.width = std::stoi(data.substr(data.find('=') + 1));
     }
-    else if (data.find("windowSizeY=") != std::string::npos)
+    else if (data.find("windowHeight=") != std::string::npos)
     {
-        m_windowSizeY = std::stoi(data.substr(data.find('=') + 1));
+        m_window.height = std::stoi(data.substr(data.find('=') + 1));
     }
     else if (data.find("windowPositionX=") != std::string::npos)
     {
-        m_windowPositionX = std::stoi(data.substr(data.find('=') + 1));
+        m_window.x = std::stoi(data.substr(data.find('=') + 1));
     }
     else if (data.find("windowPositionY=") != std::string::npos)
     {
-        m_windowPositionY = std::stoi(data.substr(data.find('=') + 1));
+        m_window.y = std::stoi(data.substr(data.find('=') + 1));
     }
     else if (data.find("commandMethod=") != std::string::npos)
     {
@@ -209,14 +195,12 @@ void Configuration::readConfig()
 }
 
 void Configuration::updateConfigSettings(
-    const int windowSizeX, const int windowSizeY,
-    const int windowPositionX, const int windowPositionY,
-    const int commandMethod)
+    const wxRect& windowSettings, const int commandMethod)
 {
-    if (windowSizeX != m_windowSizeX
-        || windowSizeY != m_windowSizeY
-        || windowPositionX != m_windowPositionX
-        || windowPositionY != m_windowPositionY
+    if (windowSettings.width != m_window.width
+        || windowSettings.height != m_window.height
+        || windowSettings.x != m_window.x
+        || windowSettings.y != m_window.y
         || commandMethod != m_commandMethod)
     {
         // Open file for writing, discard existing data.
@@ -227,11 +211,16 @@ void Configuration::updateConfigSettings(
                 << encrypt("url=" + m_portalUrl) << '\n'
                 << encrypt("username=" + m_username) << '\n'
                 << encrypt("password=" + m_password) << '\n'
-                << encrypt("windowSizeX=" + std::to_string(windowSizeX)) << '\n'
-                << encrypt("windowSizeY=" + std::to_string(windowSizeY)) << '\n'
-                << encrypt("windowPositionX=" + std::to_string(windowPositionX)) << '\n'
-                << encrypt("windowPositionY=" + std::to_string(windowPositionY)) << '\n'
-                << encrypt("commandMethod=" + std::to_string(commandMethod));
+                << encrypt("windowWidth="
+                    + std::to_string(windowSettings.width)) << '\n'
+                << encrypt("windowHeight="
+                    + std::to_string(windowSettings.height)) << '\n'
+                << encrypt("windowPositionX="
+                    + std::to_string(windowSettings.x)) << '\n'
+                << encrypt("windowPositionY="
+                    + std::to_string(windowSettings.y)) << '\n'
+                << encrypt("commandMethod="
+                    + std::to_string(commandMethod));
         }
     }
 }
@@ -252,13 +241,13 @@ void Configuration::writeConfig(
             << '\n'
             << encrypt("password=" + password)
             << '\n'
-            << encrypt("windowSizeX=" + std::to_string(m_windowSizeX))
+            << encrypt("windowWidth=" + std::to_string(m_window.width))
             << '\n'
-            << encrypt("windowSizeY=" + std::to_string(m_windowSizeY))
+            << encrypt("windowHeight=" + std::to_string(m_window.height))
             << '\n'
-            << encrypt("windowPositionX=" + std::to_string(m_windowPositionX))
+            << encrypt("windowPositionX=" + std::to_string(m_window.x))
             << '\n'
-            << encrypt("windowPositionY=" + std::to_string(m_windowPositionY))
+            << encrypt("windowPositionY=" + std::to_string(m_window.y))
             << '\n'
             << encrypt("commandMethod=" + std::to_string(m_commandMethod));
         configFile.close();
