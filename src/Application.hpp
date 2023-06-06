@@ -48,6 +48,7 @@ private:
 	void displayStatusStarted();
 	void displayStatusStopped();
 	void displayWelcomeMessage();
+	std::string elapsedTimeMessage(const int duration, const std::string& response);
 	void enterCredentials();
 	void exportJson(MenuID mode);
 	void keyboardShortcuts(wxKeyEvent& event);
