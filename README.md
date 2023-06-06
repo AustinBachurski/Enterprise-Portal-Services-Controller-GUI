@@ -29,7 +29,7 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
 * ```File``` menu allows you to update Enterprise Portal Credentials, Change the Server Command Method, or Quit.
 Services on an Esri Enterprise Portal server can be controlled on two ways:
     1. ```Sequential Commands``` - where each service is individually commanded to start or stop.
-    2. ```Single Batch Command``` - where a JSON list of services to start or stop is sent, and the server goes through the list, starting or stopping services as required.
+    2. ```Single Batch Command``` - where a JSON list of services to start or stop is sent to the server in a single command.
 
 >Testing has shown sequential control to provide signifigantly faster results, but performance may vary depending your hardware configuration.  Experiment with both and find what works best for you.
 
