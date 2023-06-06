@@ -22,8 +22,6 @@ class Configuration;
 class PortalServerControls
 {
 public:
-	PortalServerControls(Configuration& configuration);
-
 	/*
 	 * Nested unordered_map of strings containing map server information.
 	 * ------------------------------
@@ -39,6 +37,8 @@ public:
 		std::string, std::unordered_map<
 			std::string, std::string>> m_serviceInformation;
 
+	PortalServerControls(Configuration& configuration);
+
 	bool credentialsAreValid() const;
 	std::string generateJson(const std::string_view command);
 	std::string getCountStartedAsString() const;
@@ -47,16 +47,13 @@ public:
 	std::string getCountTotalAsString() const;
 	std::string getTimeStamp() const;
 	bool isStatusValid() const;
-
 	void sendBatchServerCommand(
 		std::promise<nlohmann::json>&& promise,
 		const std::string_view command);
-
 	void sendSequentialServerCommands(
 		std::promise<nlohmann::json>&& promise,
 		const std::string_view command,
 		threadState& state);
-
 	bool tokenIsValid() const;
 	void updateStatus();
 	void updateStatus(threadState& state);
