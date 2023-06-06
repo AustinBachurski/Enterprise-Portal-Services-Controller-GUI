@@ -620,9 +620,13 @@ void Frame::menuAction(wxCommandEvent& event)
 		{
 		case MenuID::changeCredentials:
 		{
+			m_configuration.m_updateCredentials = false;
 			enterCredentials();
-			updateCredentials();
-			displayWelcomeMessage();
+			if (m_configuration.m_updateCredentials)
+			{
+				updateCredentials();
+				displayWelcomeMessage();
+			}
 			break;
 		}
 
@@ -725,9 +729,13 @@ void Frame::menuAction(wxCommandEvent& event)
 		}
 		case MenuID::changeCredentials:
 		{
+			m_configuration.m_updateCredentials = false;
 			enterCredentials();
-			updateCredentials();
-			displayWelcomeMessage();
+			if (m_configuration.m_updateCredentials)
+			{
+				updateCredentials();
+				displayWelcomeMessage();
+			}
 			break;
 		}
 		default:
@@ -913,4 +921,5 @@ void Frame::updateCredentials()
 		progress.Pulse();
 	}
 	progress.Hide();
+	displayWelcomeMessage();
 }
