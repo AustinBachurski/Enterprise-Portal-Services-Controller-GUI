@@ -13,13 +13,13 @@ public:
 	EnterCredentials(wxWindow* parent, Configuration& configuration);
 
 private:
-	void captureCredentials(
-		wxCommandEvent& event, Configuration& configuration);
-
 	bool m_okPressed{ false };
 	wxTextCtrl* m_urlEntryBox{ nullptr };
 	wxTextCtrl* m_usernameEntryBox{ nullptr };
 	wxTextCtrl* m_passwordEntryBox{ nullptr };
+
+	void captureCredentials(
+		wxCommandEvent& event, Configuration& configuration);
 };
 
 #endif
