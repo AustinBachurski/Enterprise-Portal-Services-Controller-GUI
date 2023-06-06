@@ -493,6 +493,21 @@ void Frame::displayStatusStopped()
 	}
 }
 
+std::string Frame::elapsedTimeMessage(
+	const int duration, const std::string& response)
+{
+	int minutes = duration / 60;
+	int seconds = duration % 60;
+
+	std::string message{
+		"Completed in "
+		+ (minutes ? std::to_string(minutes) + " minutes, " : "")
+		+ std::to_string(seconds) + " seconds.\n\n"
+		+ "Server Response : " + response};
+
+	return message;
+}
+
 void Frame::displayWelcomeMessage()
 {
 	m_statusText->Clear();
@@ -755,7 +770,7 @@ void Frame::refreshStatus()
 		true);
 
 	wxGenericProgressDialog progress(
-		"Update Status",
+		"Updating Status",
 		state.message,
 		state.progressMax,
 		this,
@@ -813,9 +828,7 @@ void Frame::sendBatchCommand(const std::string_view command)
 	displayStatusAll();
 
 	wxMessageDialog* done = new wxMessageDialog(this,
-		"Operation completed in "
-		+ std::to_string(elapsedTime.count()) + " seconds.\n\n"
-		+ "Server Response: " + result["status"].get<std::string>(),
+		elapsedTimeMessage(elapsedTime.count(), result["status"].get<std::string>()),
 		"Operation Complete", wxOK | wxICON_INFORMATION);
 	done->ShowModal();
 }
@@ -865,9 +878,7 @@ void Frame::sendSequentialCommand(const std::string_view command)
 	displayStatusAll();
 
 	wxMessageDialog* done = new wxMessageDialog(this,
-		"Operation completed in "
-		+ std::to_string(elapsedTime.count()) + " seconds.\n\n"
-		+ "Server Response: " + result["status"].get<std::string>(),
+		elapsedTimeMessage(elapsedTime.count(), result["status"].get<std::string>()),
 		"Operation Complete", wxOK | wxICON_INFORMATION);
 	done->ShowModal();
 }
