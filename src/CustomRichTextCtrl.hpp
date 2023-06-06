@@ -9,36 +9,42 @@
 
 /*
 Custom wxRichTextCtrl that prevents the carat from being shown by
-skipping the EVT_SET_FOCUS event.
+skipping the EVT_SET_FOCUS event, also adds a "findText" method.
 */
 class CustomRichTextCtrl : public wxRichTextCtrl
 {
 public:
-	/*
-	@param parent Pointer to the parent window, usually 'this'.
-	@param style wxWidgets style - see wxRichTextCtrl docs.
-	*/
 	CustomRichTextCtrl(wxWindow* parent, long style);
-
 	void findText(wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
 
 private:
 	int m_caretPosition;
 	std::string m_findString;
+	int m_lastFlags{ -1 };
+	std::string m_text;
 
-	// Discards the wxFocusEvent.
-	void discard(wxFocusEvent& event);
-	
-	/*
-	Display modal window that searched text was not found.
-	*/
-	void findNotFound(wxFindReplaceDialog* findTextWindow,
-		const std::string& searchString,
-		const int textSize) const;
+	void findNotFound(
+		wxFindReplaceDialog* findTextWindow,
+		const std::string& searchString) const;
 
-	// @return True if character is not a A-Z or a-z.
 	bool isNotCharacter(char character) const;
-
+	void preventFocus(wxFocusEvent& event);
+	void searchTopToBottom(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchTopToBottomMatchCase(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchTopToBottomMatchWord(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchTopToBottomMatchBoth(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchBottomToTop(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchBottomToTopMatchCase(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchBottomToTopMatchWord(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
+	void searchBottomToTopMatchBoth(
+		wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
 
 	wxDECLARE_EVENT_TABLE();
 };
