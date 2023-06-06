@@ -20,7 +20,8 @@ Frame::Frame(const std::string&& title)
 	SetSize(m_configuration.getWindowSizeX(),
 			m_configuration.getWindowSizeY());
 
-	//SetPosition(wxPoint(123, 456));
+	SetPosition(wxPoint(m_configuration.getWindowPositionX(),
+						m_configuration.getWindowPositionY()));
 
 	wxPanel* panel = new wxPanel(
 		this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
