@@ -33,12 +33,12 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
 
 >Testing has shown sequential control to provide signifigantly faster results, but performance may vary depending your hardware configuration.  Experiment with both and find what works best for you.
 
-* ```Server Status``` menu has options for searching text, copying the selection or entire displayed text, refreshing the server status, and filtering the data by service state.
-* ```Server Controls``` menu will spawn a confirmation popup, then send the appropriate command to the server.  You can also generate a JSON of services to start or stop for use with the ArcGIS Server Administrator Directory.
+* ```Server Status``` menu has options for searching the status display, copying the status display, refreshing the server status, and filtering the data by service state.
+* ```Server Controls``` menu will spawn a confirmation popup and, if confirmed, send the appropriate command to the server.  You can also generate a JSON list of services to start or stop for use with the ArcGIS Server Administrator Directory.
 * Server and service information are displayed in an interactable text frame, a ```right-click``` in the text frame will open the ```Server Status``` menu as a context menu.
 * Some features can be accessed via keyboard commands:
     1. ```F5``` will refresh the server status.
-    2. ```Ctrl + F``` or ```F3``` will open the search dialog.
+    2. ```Ctrl + F``` or ```F3``` will open the find text dialog.
     3. ```Ctrl + A``` will select all the text in the text box.
     4. ```Ctrl + C``` will copy the selected text from the text box.
  
