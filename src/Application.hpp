@@ -16,8 +16,9 @@
 #include <wx/artprov.h>
 #include <wx/clipbrd.h>
 #include <wx/fdrepdlg.h>
-#include <wx/wx.h>
+#include <wx/gdicmn.h>
 #include <wx/progdlg.h>
+#include <wx/wx.h>
 
 class Application : public wxApp
 {
