@@ -114,17 +114,26 @@ void Configuration::parseData(std::string& data)
     if (data.find("url=") != std::string::npos)
     {
         m_portalUrl = data.substr(data.find('=') + 1);
-        m_portalUrlAquired = true;
+        if (!m_portalUrl.empty())
+        {
+            m_portalUrlAquired = true;
+        }
     }
     else if (data.find("username=") != std::string::npos)
     {
         m_username = data.substr(data.find('=') + 1);
-        m_usernameAquired = true;
+        if (!m_username.empty())
+        {
+            m_usernameAquired = true;
+        }
     }
     else if (data.find("password=") != std::string::npos)
     {
         m_password = data.substr(data.find('=') + 1);
-        m_passwordAquired = true;
+        if (!m_password.empty())
+        {
+            m_passwordAquired = true;
+        }
     }
     else if (data.find("windowSizeX=") != std::string::npos)
     {
