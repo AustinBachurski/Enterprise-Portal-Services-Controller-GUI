@@ -748,7 +748,7 @@ void Frame::refreshStatus()
 		true);
 
 	wxGenericProgressDialog progress(
-		Constants::Messages::gathering,
+		"Update Status",
 		state.message,
 		state.progressMax,
 		this,
