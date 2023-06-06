@@ -23,6 +23,8 @@ public:
 	std::string getUsername() const;
 	std::string getPassword() const;
 	const std::string& getPortal() const;
+	int getWindowPositionX() const;
+	int getWindowPositionY() const;
 	int getWindowSizeX() const;
 	int getWindowSizeY() const;
 	void readConfig();
