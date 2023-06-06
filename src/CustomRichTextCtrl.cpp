@@ -1,25 +1,17 @@
 #include "CustomRichTextCtrl.hpp"
 
-CustomRichTextCtrl::CustomRichTextCtrl(wxWindow* parent, long style) :
-wxRichTextCtrl(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, style, wxDefaultValidator, wxEmptyString),
-m_caretPosition{},
-m_findString{}
+CustomRichTextCtrl::CustomRichTextCtrl(wxWindow* parent, long style)
+	: wxRichTextCtrl(parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
+		  wxDefaultSize, style, wxDefaultValidator, wxEmptyString),
+	  m_caretPosition{},
+	  m_findString{},
+	  m_text{}
 {}
 
-void CustomRichTextCtrl::discard(wxFocusEvent& event)
-{
-	event.Skip(false);
-}
-
 void CustomRichTextCtrl::findNotFound(wxFindReplaceDialog* findTextWindow,
-	const std::string& searchString,
-	const int textSize) const
-	// findTextWindow is set as the parent of the Modal window so that window interaction is blocked.
+	const std::string& searchString) const
 {
-	if (m_caretPosition > -2 && m_caretPosition < textSize)
-		// Search text may be at position 0 and once found
-		// m_caretPosition will be decremented to -1 in findText().
-		// The inverse is true for top to bottom searching.
+	if (this->HasSelection())
 	{
 		wxMessageDialog* endReached = new wxMessageDialog(findTextWindow,
 			"Search reached end.",
@@ -35,414 +27,45 @@ void CustomRichTextCtrl::findNotFound(wxFindReplaceDialog* findTextWindow,
 	}
 }
 
-void CustomRichTextCtrl::findText(wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+void CustomRichTextCtrl::findText(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
 {
 	switch (event.GetFlags())
 	{
 	case Constants::SearchMethod::topToBottom:
-	{
-		std::string statusText{ std::move(this->GetValue().Lower()) };
+		searchTopToBottom(findTextWindow, event);
+		return;
 
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString().Lower() != m_findString)
-		{
-			m_caretPosition = 0;
-			m_findString = event.GetFindString().Lower();
-		}
+	case Constants::SearchMethod::topToBottom_matchBoth:
+		searchTopToBottomMatchBoth(findTextWindow, event);
+		return;
 
-		if (statusText.find(m_findString, m_caretPosition) != std::string::npos)
-		{
-			m_caretPosition = statusText.find(m_findString, m_caretPosition);
-			this->SelectWord(m_caretPosition);
-			this->ShowPosition(m_caretPosition);
-			// Previous position must be incremented in order
-			// to skip the work on the next search iteration.
-			++m_caretPosition;
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
+	case Constants::SearchMethod::topToBottomMatchCase:
+		searchTopToBottomMatchCase(findTextWindow, event);
+		return;
 
-	case Constants::SearchMethod::matchCase_topToBottom:
-	{
-		std::string statusText{ std::move(this->GetValue()) };
-
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString() != m_findString)
-		{
-			m_caretPosition = 0;
-			m_findString = event.GetFindString();
-		}
-
-		if (statusText.find(m_findString, m_caretPosition) != std::string::npos)
-		{
-			m_caretPosition = statusText.find(m_findString, m_caretPosition);
-			this->SelectWord(m_caretPosition);
-			this->ShowPosition(m_caretPosition);
-			// Previous position must be incremented in order
-			// to skip the work on the next search iteration.
-			++m_caretPosition;
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
-
-	case Constants::SearchMethod::matchWord_topToBottom:
-	{
-		std::string statusText{ std::move(this->GetValue().Lower()) };
-
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString().Lower() != m_findString)
-		{
-			m_caretPosition = 0;
-			m_findString = event.GetFindString().Lower();
-		}
-
-		if (statusText.find(m_findString, m_caretPosition) != std::string::npos)
-		{
-			if (statusText.find(m_findString, m_caretPosition) == 0)
-			{
-				if (isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.find(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					++m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else if (statusText.find(m_findString, m_caretPosition + m_findString.size() >= statusText.size()))
-			{
-				if (isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) - 1)))
-				{
-					m_caretPosition = statusText.find(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					++m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else
-			{
-				if (isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) - 1))
-					&& isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.find(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					++m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
-
-	case Constants::SearchMethod::matchBoth_topToBottom:
-	{
-		std::string statusText{ std::move(this->GetValue()) };
-
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString() != m_findString)
-		{
-			m_caretPosition = 0;
-			m_findString = event.GetFindString();
-		}
-
-		if (statusText.find(m_findString, m_caretPosition) != std::string::npos)
-		{
-			if (statusText.find(m_findString, m_caretPosition) == 0)
-			{
-				if (isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.find(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					++m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else if (statusText.find(m_findString, m_caretPosition + m_findString.size() >= statusText.size()))
-			{
-				if (isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) - 1)))
-				{
-					m_caretPosition = statusText.find(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					++m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else
-			{
-				if (isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) - 1))
-					&& isNotCharacter(statusText.at(statusText.find(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.find(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					++m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
+	case Constants::SearchMethod::topToBottomMatchWord:
+		searchTopToBottomMatchWord(findTextWindow, event);
+		return;
 
 	case Constants::SearchMethod::bottomToTop:
-	{
-		std::string statusText{ std::move(this->GetValue().Lower()) };
+		searchBottomToTop(findTextWindow, event);
+		return;
 
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString().Lower() != m_findString)
-		{
-			m_caretPosition = statusText.size();
-			m_findString = event.GetFindString().Lower();
-		}
+	case Constants::SearchMethod::bottomToTopMatchBoth:
+		searchTopToBottomMatchBoth(findTextWindow, event);
+		return;
 
-		if (m_caretPosition < 0)
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		else if (statusText.rfind(m_findString, m_caretPosition) != std::string::npos)
-		{
-			m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-			this->SelectWord(m_caretPosition);
-			this->ShowPosition(m_caretPosition);
-			// Previous position must be incremented in order
-			// to skip the work on the next search iteration.
-			--m_caretPosition;
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
+	case Constants::SearchMethod::bottomToTopMatchCase:
+		searchBottomToTopMatchCase(findTextWindow, event);
+		return;
 
-	case Constants::SearchMethod::matchWord_bottomToTop:
-	{
-		std::string statusText{ std::move(this->GetValue().Lower()) };
+	case Constants::SearchMethod::bottomToTopMatchWord:
+		searchBottomToTopMatchWord(findTextWindow, event);
+		return;
 
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString().Lower() != m_findString)
-		{
-			m_caretPosition = statusText.size();
-			m_findString = event.GetFindString().Lower();
-		}
-
-		if (m_caretPosition < 0)
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		else if (statusText.rfind(m_findString, m_caretPosition) != std::string::npos)
-		{
-			if (statusText.rfind(m_findString, m_caretPosition) == 0)
-			{
-				if (isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					--m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else if (statusText.rfind(m_findString, m_caretPosition + m_findString.size() >= statusText.size()))
-			{
-				if (isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) - 1)))
-				{
-					m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					--m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else
-			{
-				if (isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) - 1))
-					&& isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					--m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
-
-	case Constants::SearchMethod::matchCase_bottomToTop:
-	{
-		std::string statusText{ std::move(this->GetValue()) };
-
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString().Lower() != m_findString)
-		{
-			m_caretPosition = statusText.size();
-			m_findString = event.GetFindString().Lower();
-		}
-
-		if (m_caretPosition < 0)
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		else if (statusText.rfind(m_findString, m_caretPosition) != std::string::npos)
-		{
-			m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-			this->SelectWord(m_caretPosition);
-			this->ShowPosition(m_caretPosition);
-			// Previous position must be decremented in order
-			// to skip the work on the next search iteration.
-			--m_caretPosition;
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
-
-	case Constants::SearchMethod::matchBoth_bottomToTop:
-	{
-		std::string statusText{ std::move(this->GetValue()) };
-
-		// Reset caret position if search string is new - "Find" vs "Find Next".
-		if (event.GetFindString() != m_findString)
-		{
-			m_caretPosition = statusText.size();
-			m_findString = event.GetFindString();
-		}
-
-		if (m_caretPosition < 0)
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		else if (statusText.rfind(m_findString, m_caretPosition) != std::string::npos)
-		{
-			if (statusText.rfind(m_findString, m_caretPosition) == 0)
-			{
-				if (isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					--m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-			else if (statusText.rfind(m_findString, m_caretPosition + m_findString.size() >= statusText.size()))
-			{
-				if (isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) - 1)))
-				{
-					m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					--m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-
-			}
-			else
-			{
-				if (isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) - 1))
-					&& isNotCharacter(statusText.at(statusText.rfind(m_findString, m_caretPosition) + m_findString.size())))
-				{
-					m_caretPosition = statusText.rfind(m_findString, m_caretPosition);
-					this->SelectWord(m_caretPosition);
-					this->ShowPosition(m_caretPosition);
-					// Previous position must be incremented in order
-					// to skip the work on the next search iteration.
-					--m_caretPosition;
-				}
-				else
-				{
-					findNotFound(findTextWindow, m_findString, statusText.size());
-				}
-			}
-		}
-		else
-		{
-			findNotFound(findTextWindow, m_findString, statusText.size());
-		}
-		break;
-	}
+	default:
+		return;
 	}
 }
 
@@ -451,6 +74,523 @@ bool CustomRichTextCtrl::isNotCharacter(char character) const
 	return character < 'A' || character > 'z';
 }
 
+void CustomRichTextCtrl::preventFocus(wxFocusEvent& event)
+{
+	event.Skip(false);
+}
+
+void CustomRichTextCtrl::searchTopToBottom(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = 0;
+		m_findString = event.GetFindString().Lower();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue().Lower();
+	}
+	if (m_text.find(m_findString, m_caretPosition) != std::string::npos)
+	{
+		m_caretPosition = m_text.find(m_findString, m_caretPosition);
+		this->SetCaretPosition(m_caretPosition);
+		this->ShowPosition(m_caretPosition);
+		this->SetSelection(
+			m_caretPosition, m_caretPosition + m_findString.size());
+
+		// Previous position must be incremented in order
+		// to skip the word on the next search iteration.
+		++m_caretPosition;
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchTopToBottomMatchBoth(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = 0;
+		m_findString = event.GetFindString();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue();
+	}
+
+	if (m_text.find(m_findString, m_caretPosition) != std::string::npos)
+	{
+		if (m_text.find(m_findString, m_caretPosition) == 0)
+		{
+			if (isNotCharacter(m_text.at(m_text.find(
+				m_findString, m_caretPosition) + m_findString.size())))
+			{
+				m_caretPosition =
+					m_text.find(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be incremented in order
+				// to skip the word on the next search iteration.
+				++m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else if (m_text.find(
+			m_findString, m_caretPosition + m_findString.size())
+			>= m_text.size())
+		{
+			if (isNotCharacter(m_text.at(m_text.find(
+				m_findString, m_caretPosition) - 1)))
+			{
+				m_caretPosition =
+					m_text.find(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be incremented in order
+				// to skip the word on the next search iteration.
+				++m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else
+		{
+			if (isNotCharacter(m_text.at(m_text.find(
+				m_findString, m_caretPosition) - 1))
+				&& isNotCharacter(m_text.at(m_text.find(
+					m_findString, m_caretPosition) + m_findString.size())))
+			{
+				m_caretPosition =
+					m_text.find(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be incremented in order
+				// to skip the word on the next search iteration.
+				++m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchTopToBottomMatchCase(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = 0;
+		m_findString = event.GetFindString();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue();
+	}
+	if (m_text.find(m_findString, m_caretPosition) != std::string::npos)
+	{
+		m_caretPosition = m_text.find(m_findString, m_caretPosition);
+		this->SetCaretPosition(m_caretPosition);
+		this->ShowPosition(m_caretPosition);
+		this->SetSelection(
+			m_caretPosition, m_caretPosition + m_findString.size());
+
+		// Previous position must be incremented in order
+		// to skip the word on the next search iteration.
+		++m_caretPosition;
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchTopToBottomMatchWord(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = 0;
+		m_findString = event.GetFindString().Lower();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue().Lower();
+	}
+
+	if (m_text.find(m_findString, m_caretPosition) != std::string::npos)
+	{
+		if (m_text.find(m_findString, m_caretPosition) == 0)
+		{
+			if (isNotCharacter(m_text.at(m_text.find(
+				m_findString, m_caretPosition) + m_findString.size())))
+			{
+				m_caretPosition =
+					m_text.find(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be incremented in order
+				// to skip the word on the next search iteration.
+				++m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else if (m_text.find(m_findString, m_caretPosition
+			+ m_findString.size()) >= m_text.size())
+		{
+			if (isNotCharacter(m_text.at(m_text.find(
+				m_findString, m_caretPosition) - 1)))
+			{
+				m_caretPosition =
+					m_text.find(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be incremented in order
+				// to skip the word on the next search iteration.
+				++m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else
+		{
+			if (isNotCharacter(m_text.at(m_text.find(
+				m_findString, m_caretPosition) - 1))
+				&& isNotCharacter(m_text.at(m_text.find(
+					m_findString, m_caretPosition) + m_findString.size())))
+			{
+				m_caretPosition =
+					m_text.find(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be incremented in order
+				// to skip the word on the next search iteration.
+				++m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchBottomToTop(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = m_text.size();
+		m_findString = event.GetFindString().Lower();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue().Lower();
+	}
+
+	if (m_caretPosition < 0)
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+	else if (m_text.rfind(m_findString, m_caretPosition)
+		!= std::string::npos)
+	{
+		m_caretPosition = m_text.rfind(m_findString, m_caretPosition);
+		this->SetCaretPosition(m_caretPosition);
+		this->ShowPosition(m_caretPosition);
+		this->SetSelection(
+			m_caretPosition, m_caretPosition + m_findString.size());
+
+		// Previous position must be decremented in order
+		// to skip the word on the next search iteration.
+		--m_caretPosition;
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchBottomToTopMatchBoth(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = m_text.size();
+		m_findString = event.GetFindString();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue();
+	}
+
+	if (m_caretPosition < 0)
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+	else if (m_text.rfind(
+		m_findString, m_caretPosition) != std::string::npos)
+	{
+		if (m_text.rfind(m_findString, m_caretPosition) == 0)
+		{
+			if (isNotCharacter(m_text.at(m_text.rfind(
+				m_findString, m_caretPosition) + m_findString.size() - 1)))
+			{
+				m_caretPosition =
+					m_text.rfind(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be decremented in order
+				// to skip the word on the next search iteration.
+				--m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else if (m_text.rfind(
+			m_findString, m_caretPosition + m_findString.size())
+			>= m_text.size())
+		{
+			if (isNotCharacter(m_text.at(m_text.rfind(
+				m_findString, m_caretPosition) - 1)))
+			{
+				m_caretPosition =
+					m_text.rfind(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be decremented in order
+				// to skip the word on the next search iteration.
+				--m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else
+		{
+			if (isNotCharacter(m_text.at(m_text.rfind(
+				m_findString, m_caretPosition) - 1))
+				&& isNotCharacter(m_text.at(m_text.rfind(
+					m_findString, m_caretPosition)
+					+ m_findString.size() - 1)))
+			{
+				m_caretPosition =
+					m_text.rfind(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be decremented in order
+				// to skip the word on the next search iteration.
+				--m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchBottomToTopMatchCase(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND
+		|| event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = m_text.size();
+		m_findString = event.GetFindString();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue();
+	}
+
+	if (m_caretPosition < 0)
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+	else if (m_text.rfind(
+		m_findString, m_caretPosition) != std::string::npos)
+	{
+		m_caretPosition = m_text.rfind(m_findString, m_caretPosition);
+		this->SetCaretPosition(m_caretPosition);
+		this->ShowPosition(m_caretPosition);
+		this->SetSelection(
+			m_caretPosition, m_caretPosition + m_findString.size());
+
+		// Previous position must be decremented in order
+		// to skip the word on the next search iteration.
+		--m_caretPosition;
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
+void CustomRichTextCtrl::searchBottomToTopMatchWord(
+	wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event)
+{
+	// Reset caret position on wxEVT_FIND as opposed to wxEVT_FIND_NEXT,
+	// or if find method changes.
+	if (event.GetEventType() == wxEVT_FIND || event.GetFlags() != m_lastFlags)
+	{
+		this->SelectNone();
+		m_caretPosition = m_text.size();
+		m_findString = event.GetFindString().Lower();
+		m_lastFlags = event.GetFlags();
+		m_text = this->GetValue().Lower();
+	}
+
+	if (m_caretPosition < 0)
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+	else if (m_text.rfind(m_findString, m_caretPosition) != std::string::npos)
+	{
+		if (m_text.rfind(m_findString, m_caretPosition) == 0)
+		{
+			if (isNotCharacter(m_text.at(m_text.rfind(
+				m_findString, m_caretPosition) + m_findString.size() - 1)))
+			{
+				m_caretPosition =
+					m_text.rfind(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be decremented in order
+				// to skip the word on the next search iteration.
+				--m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else if (m_text.rfind(m_findString, m_caretPosition
+			+ m_findString.size()) >= m_text.size())
+		{
+			if (isNotCharacter(m_text.at(m_text.rfind(
+				m_findString, m_caretPosition) - 1)))
+			{
+				m_caretPosition =
+					m_text.rfind(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be decremented in order
+				// to skip the word on the next search iteration.
+				--m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+		else
+		{
+			if (isNotCharacter(m_text.at(m_text.rfind(
+				m_findString, m_caretPosition) - 1))
+				&& isNotCharacter(m_text.at(m_text.rfind(
+					m_findString, m_caretPosition)
+					+ m_findString.size() - 1)))
+			{
+				m_caretPosition =
+					m_text.rfind(m_findString, m_caretPosition);
+				this->SetCaretPosition(m_caretPosition);
+				this->ShowPosition(m_caretPosition);
+				this->SetSelection(
+					m_caretPosition, m_caretPosition + m_findString.size());
+
+				// Previous position must be decremented in order
+				// to skip the word on the next search iteration.
+				--m_caretPosition;
+			}
+			else
+			{
+				findNotFound(findTextWindow, m_findString);
+			}
+		}
+	}
+	else
+	{
+		findNotFound(findTextWindow, m_findString);
+	}
+}
+
 wxBEGIN_EVENT_TABLE(CustomRichTextCtrl, wxRichTextCtrl)
-EVT_SET_FOCUS(CustomRichTextCtrl::discard)
+EVT_SET_FOCUS(CustomRichTextCtrl::preventFocus)
 wxEND_EVENT_TABLE()
