@@ -15,6 +15,7 @@ class CustomRichTextCtrl : public wxRichTextCtrl
 {
 public:
 	CustomRichTextCtrl(wxWindow* parent, long style);
+
 	void findText(wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
 
 private:
@@ -26,7 +27,6 @@ private:
 	void findNotFound(
 		wxFindReplaceDialog* findTextWindow,
 		const std::string& searchString) const;
-
 	bool isNotCharacter(char character) const;
 	void preventFocus(wxFocusEvent& event);
 	void searchTopToBottom(
