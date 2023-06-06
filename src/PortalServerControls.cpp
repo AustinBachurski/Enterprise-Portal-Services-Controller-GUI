@@ -400,6 +400,7 @@ void PortalServerControls::sendSequentialServerCommands(
 		return;
 	}
 	promise.set_value(Constants::Messages::jsonNothingToDo);
+	state.working = false;
 }
 
 void PortalServerControls::setServiceCount()
