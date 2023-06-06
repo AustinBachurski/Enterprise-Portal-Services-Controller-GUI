@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <wx/gdicmn.h>
 #include <wx/wx.h>
 
 class Configuration
@@ -23,15 +24,10 @@ public:
 	std::string getUsername() const;
 	std::string getPassword() const;
 	const std::string& getPortal() const;
-	int getWindowPositionX() const;
-	int getWindowPositionY() const;
-	int getWindowSizeX() const;
-	int getWindowSizeY() const;
+	const wxRect& getWindowSettings() const;
 	void readConfig();
 	void updateConfigSettings(
-		const int windowSizeX, const int windowSizeY,
-		const int windowPositionX, const int windowPositionY,
-		const int commandMethod);
+		const wxRect& windowSettings, const int commandMethod);
 	void writeConfig( // Automatically calls readConfig() after writing.
 		const std::string&& portalUrl,
 		const std::string&& username,
@@ -49,10 +45,7 @@ private:
 	bool m_portalUrlAquired{ false };
 	std::string m_username;
 	bool m_usernameAquired{ false };
-	int m_windowSizeX{ 475 };
-	int m_windowSizeY{ 500 };
-	int m_windowPositionX{ 50 };
-	int m_windowPositionY{ 50 };
+	wxRect m_window{ 50, 50, 475, 500 };
 
 	void createDirectory();
 	char decrypt(const char character);
