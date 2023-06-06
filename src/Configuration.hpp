@@ -27,8 +27,8 @@ public:
 	int getWindowSizeY() const;
 	void readConfig();
 	void updateConfigSettings(
-		const int windowSizeX,
-		const int windowSizeY,
+		const int windowSizeX, const int windowSizeY,
+		const int windowPositionX, const int windowPositionY,
 		const int commandMethod);
 	void writeConfig( // Automatically calls readConfig() after writing.
 		const std::string&& portalUrl,
@@ -49,6 +49,8 @@ private:
 	bool m_usernameAquired{ false };
 	int m_windowSizeX{ 475 };
 	int m_windowSizeY{ 500 };
+	int m_windowPositionX{ 50 };
+	int m_windowPositionY{ 50 };
 
 	void createDirectory();
 	char decrypt(const char character);
