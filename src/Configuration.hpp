@@ -13,7 +13,10 @@
 class Configuration
 {
 public:
+	bool m_updateCredentials{ false };
+
 	Configuration();
+
 	bool credentialsAquired() const;
 	void enterCredentials();
 	int getCommandMethod() const;
