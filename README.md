@@ -50,7 +50,7 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
 |:-:|:-:|:-:|
 |![fileMenu](screenshots/file_menu.png) |![statusMenu](screenshots/status_menu.png)|![controlsMenu](screenshots/controls_menu.png)
 |<b>Service Status Display</b>|<b>Find Dialog & Context Menu</b>|<b>Common Popups</b>|
-|![mixedStatus](screenshots/mixed_status.png) |![contextMenu](screenshots/context_menu.png)|![refreshProgress](screenshots/refresh_progress.png)<br>![stopPrompt](screenshots/stop_prompt.png)<br>![startPrompt](screenshots/start_prompt.png)<br>![commandProgress](screenshots/command_progress.png)
+|![mixedStatus](screenshots/mixed_status.png) |![contextMenu](screenshots/context_menu.png)|![refreshProgress](screenshots/refresh_progress.png)<br>![startPrompt](screenshots/start_prompt.png)<br>![commandProgress](screenshots/command_progress.png)
 
 
 ## External Libraries
