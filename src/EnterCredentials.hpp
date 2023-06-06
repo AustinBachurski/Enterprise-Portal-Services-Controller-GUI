@@ -1,34 +1,25 @@
 #ifndef ENTERCREDENTIALS_HPP
 #define ENTERCREDENTIALS_HPP
 
-#include "Credentials.hpp"
+#include "Configuration.hpp"
 #include <string>
 #include <wx/wx.h>
 
-// Forward declaration.
-class Credentials;
+class Configuration;
 
-// UI dialog that prompts user for Enterprise Portal credentials.
 class EnterCredentials : public wxDialog
 {
 public:
-	// Displays dialog window.
-	EnterCredentials(wxWindow* parent, Credentials& credentials);
+	EnterCredentials(wxWindow* parent, Configuration& configuration);
 
 private:
-	// Captures values from the dialog window
-	// and sends them to the Credentials class.
-	void captureCredentials(wxCommandEvent& event, Credentials& credentials);
+	void captureCredentials(
+		wxCommandEvent& event, Configuration& configuration);
 
-	/*
-	Used to prevent the 'required' popup window from
-	showing if 'OK' was pressed.
-	@return True if 'OK' was pressed in the EnterCredentials dialog window.
-	*/
-	bool m_okPressed;
-	wxTextCtrl* m_urlEntryBox;
-	wxTextCtrl* m_usernameEntryBox;
-	wxTextCtrl* m_passwordEntryBox;
+	bool m_okPressed{ false };
+	wxTextCtrl* m_urlEntryBox{ nullptr };
+	wxTextCtrl* m_usernameEntryBox{ nullptr };
+	wxTextCtrl* m_passwordEntryBox{ nullptr };
 };
 
 #endif
