@@ -5,6 +5,23 @@ This application provides a simple, user-friendly interface that allows users to
 
 The directory, name, and state of every service on the server can be obtained in just a few seconds via an easy to understand context menu and selectable text frame.  Users can start or stop all services at once with a couple clicks of the top menu bar, allowing server maintenance tasks or service modifications to be performed without wasting time clicking stop or start on dozens of services using ArcGIS Server Manager, or manually typing out a long list of services in JSON format using ArcGIS Server Administrator Directory.
 
+## External Libraries
+
+### C++ Requests: Curl for People
+
+&nbsp;&nbsp;&nbsp;&nbsp;*C++ Requests is a simple wrapper around libcurl inspired by the excellent Python Requests project.*
+  * [GitHub Repository](https://github.com/libcpr/cpr)
+
+### nlohmann JSON
+
+&nbsp;&nbsp;&nbsp;&nbsp;*JSON for Modern C++*
+  * [GitHub Repository](https://github.com/nlohmann/json)
+
+### wxWidgets
+
+&nbsp;&nbsp;&nbsp;&nbsp;*wxWidgets is a C++ library that lets developers create applications for Windows, macOS, Linux and other platforms with a single code base.*
+  * [wxWidgets.org](https://wiki.wxwidgets.org/Install)
+
 ## Using the Tool
 
 When opened, the tool checks for a ```config.ini``` file in a local ```config``` directory:
@@ -44,6 +61,17 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
  
 * The tool also saves the server command mode setting, window size, and window position to the ```config.ini``` file on exit.
 
+## Performance Metrics
+
+Our Enterprise Portal Server contained 80 services at time of testing.
+
+Function tests resulted in the following times:
+* Update status display - ```8 seconds```
+* Start Services, Sequential Mode - ```1 minute, 35 seconds```
+* Stop Services, Sequential Mode - ```1 minute, 3 seconds```
+* Start Services, Batch Mode - ```2 minutes, 14 seconds```
+* Stop Services, Batch Mode - ```2 minutes, 12 seconds```
+
 ## Image Gallery
 
 |File Menu|Server Status Menu|Server Controls Menu|
@@ -51,22 +79,3 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
 |![fileMenu](screenshots/file_menu.png) |![statusMenu](screenshots/status_menu.png)|![controlsMenu](screenshots/controls_menu.png)
 |<b>Service Status Display</b>|<b>Find Dialog & Context Menu</b>|<b>Common Popups</b>|
 |![mixedStatus](screenshots/mixed_status.png) |![contextMenu](screenshots/context_menu.png)|![refreshProgress](screenshots/refresh_progress.png)<br>![startPrompt](screenshots/start_prompt.png)<br>![commandProgress](screenshots/command_progress.png)
-
-
-## External Libraries
-
-### C++ Requests: Curl for People
-
-&nbsp;&nbsp;&nbsp;&nbsp;*C++ Requests is a simple wrapper around libcurl inspired by the excellent Python Requests project.*
-  * [GitHub Repository](https://github.com/libcpr/cpr)
-
-### nlohmann JSON
-
-&nbsp;&nbsp;&nbsp;&nbsp;*JSON for Modern C++*
-  * [GitHub Repository](https://github.com/nlohmann/json)
-
-### wxWidgets
-
-&nbsp;&nbsp;&nbsp;&nbsp;*wxWidgets is a C++ library that lets developers create applications for Windows, macOS, Linux and other platforms with a single code base.*
-  * [wxWidgets.org](https://wiki.wxwidgets.org/Install)
-
