@@ -207,19 +207,19 @@ Frame::Frame(const std::string&& title)
 			MenuID::showAll,
 			"Show All Services");
 		contextShowAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_EXECUTABLE_FILE, wxART_MENU));
+			wxART_REPORT_VIEW, wxART_MENU));
 
 		auto contextShowStarted = contextStatusMenu->Append(
 			MenuID::showStarted,
 			"Show Only Started Services");
 		contextShowStarted->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_TICK_MARK, wxART_MENU));
+			wxART_GO_FORWARD, wxART_MENU));
 
 		auto contextShowStopped = contextStatusMenu->Append(
 			MenuID::showStopped,
 			"Show Only Stopped Services");
 		contextShowStopped->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_CROSS_MARK, wxART_MENU));
+			wxART_STOP, wxART_MENU));
 
 	m_statusText->SetContextMenu(contextStatusMenu);
 	contextStatusMenu->Bind(wxEVT_MENU, &Frame::menuAction, this);
