@@ -27,10 +27,10 @@ The directory, name, and state of every service on the server can be obtained in
 When opened, the tool checks for a ```config.ini``` file in a local ```config``` directory:
 
     🗃️ Drive:\
-    ┣ 📂 Containing Directory
-    ┃ ┣ 📁 config 📁
-    ┃ ┃ ┗ 📜 config.ini
-    ┃ ┗ 💻 Portal Services Controller.exe
+    ┗📂 Containing Directory
+      ┣📁 config 📁
+      ┃ ┗📜 config.ini
+      ┗💻 Portal Services Controller.exe
 
  * If not found the tool will generate the ```config``` directory and ```config.ini``` file in it's local directory and prompt the user for an Enterprise Portal URL as well as credentials for the server.  Once entered, the tool applies a light encryption and writes the data to the ```config.ini``` file.
 
