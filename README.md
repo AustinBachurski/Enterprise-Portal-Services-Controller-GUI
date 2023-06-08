@@ -66,11 +66,11 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
 Tool was tested on an Enterprise Portal Server with an Intel Xeon Gold 5118 CPU, 32GB of memory, and a 500GB hard drive containing 80 services at the time of testing.
 
 Function tests resulted in the following times:
-* Update status display - ```8 seconds```
-* Start Services, Sequential Mode - ```1 minute, 35 seconds```
-* Stop Services, Sequential Mode - ```1 minute, 3 seconds```
-* Start Services, Batch Mode - ```2 minutes, 14 seconds```
-* Stop Services, Batch Mode - ```2 minutes, 12 seconds```
+* Update status display - ```~1 second```
+* Start Services, Sequential Mode - ```1 minute, 21 seconds```
+* Stop Services, Sequential Mode - ```49 seconds```
+* Start Services, Batch Mode - ```2 minutes```
+* Stop Services, Batch Mode - ```1 minutes, 58 seconds```
 
 ## Image Gallery
 
