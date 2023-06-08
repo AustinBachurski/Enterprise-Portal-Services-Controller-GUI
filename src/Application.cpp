@@ -774,7 +774,7 @@ void Frame::refreshStatus()
 		state.message,
 		state.progressMax,
 		this,
-		wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME);
+		wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 
 	std::thread update([this, &state]()
 		{ m_portalServerControl->updateStatus(state); });
