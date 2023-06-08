@@ -88,6 +88,13 @@ private:
 	nlohmann::json retrieveInformationFromServer();
 	nlohmann::json retrieveInformationFromServer(const std::string& target);
 	void retrieveServicesFromServer();
+	void retrieveStatusFromServer(
+		const std::string& folder,
+		const std::string& service);
+	void retrieveStatusFromServer(
+		const std::string& folder,
+		const std::string& service,
+		threadState& state);
 	void setServiceCount();
 	void timeStamp();
 };
