@@ -273,6 +273,81 @@ void PortalServerControls::retrieveServicesFromServer()
 	}
 }
 
+void PortalServerControls::retrieveStatusFromServer(
+	const std::string& folder,
+	const std::string& service)
+{
+	std::mutex mutex;
+	std::lock_guard<std::mutex> guard(mutex);
+	nlohmann::json serverResponse{};
+
+	if (folder == "Root")
+	{
+		serverResponse = retrieveInformationFromServer(
+			service + "/status");
+	}
+	else
+	{
+		serverResponse = retrieveInformationFromServer(
+			folder + '/' + service + "/status");
+	}
+
+	for (const auto& status : serverResponse["realTimeState"])
+	{
+		m_serviceInformation[folder][service] = status;
+
+		if (status.get<std::string>() == "STARTED")
+		{
+			++m_countStarted;
+		}
+		else if (status.get<std::string>() == "STOPPED")
+		{
+			++m_countStopped;
+		}
+	}
+}
+
+void PortalServerControls::retrieveStatusFromServer(
+	const std::string& folder,
+	const std::string& service,
+	threadState& state)
+{
+	std::mutex mutex;
+	std::lock_guard<std::mutex> guard(mutex);
+	nlohmann::json serverResponse{};
+
+	if (folder == "Root")
+	{
+		serverResponse = retrieveInformationFromServer(
+			service + "/status");
+	}
+	else
+	{
+		serverResponse = retrieveInformationFromServer(
+			folder + '/' + service + "/status");
+	}
+
+	for (const auto& status : serverResponse["realTimeState"])
+	{
+		++state.progressValue;
+		if (state.message != Constants::Messages::gathering)
+		{
+			state.message = Constants::Messages::gathering;
+		}
+
+		m_serviceInformation[folder][service] = status;
+
+		if (status.get<std::string>() == "STARTED")
+		{
+			++m_countStarted;
+		}
+		else if (status.get<std::string>() == "STOPPED")
+		{
+			++m_countStopped;
+		}
+	}
+}
+
 void PortalServerControls::sendBatchServerCommand(
 	std::promise<nlohmann::json>&& promise,
 	const std::string_view command)
@@ -473,37 +548,22 @@ void PortalServerControls::updateStatus()
 {
 	m_countStarted = 0;
 	m_countStopped = 0;
-	nlohmann::json serverResponse{};
+	std::vector<std::future<void>> futures{};
 
 	for (const auto& [folder, services] : m_serviceInformation)
 	{
-		for (const auto& [service, status] : services)
+		for (const auto& [service, _unused_] : services)
 		{
-			if (folder == "Root")
-			{
-				serverResponse = retrieveInformationFromServer(
-					service + "/status");
-			}
-			else
-			{
-				serverResponse = retrieveInformationFromServer(
-					folder + '/' + service + "/status");
-			}
-
-			for (const auto& status : serverResponse["realTimeState"])
-			{
-				m_serviceInformation[folder][service] = status;
-
-				if (status.get<std::string>() == "STARTED")
+			futures.emplace_back(std::async(std::launch::async, 
+				[this, &folder, &service]()
 				{
-					++m_countStarted;
-				}
-				else if (status.get<std::string>() == "STOPPED")
-				{
-					++m_countStopped;
-				}
-			}
+					retrieveStatusFromServer(folder, service);
+				}));
 		}
+	}
+	for (const auto& future : futures)
+	{
+		future.wait();
 	}
 	timeStamp();
 	m_initialStatusGathered = true;
@@ -513,43 +573,22 @@ void PortalServerControls::updateStatus(threadState& state)
 {
 	m_countStarted = 0;
 	m_countStopped = 0;
-	nlohmann::json serverResponse{};
+	std::vector<std::future<void>> futures{};
 
 	for (const auto& [folder, services] : m_serviceInformation)
 	{
-		for (const auto& [service, status] : services)
+		for (const auto& [service, _unused_] : services)
 		{
-			if (folder == "Root")
-			{
-				serverResponse = retrieveInformationFromServer(
-					service + "/status");
-			}
-			else
-			{
-				serverResponse = retrieveInformationFromServer(
-					folder + '/' + service + "/status");
-			}
-
-			for (const auto& status : serverResponse["realTimeState"])
-			{
-				++state.progressValue;
-				if (state.message != Constants::Messages::gathering)
+			futures.emplace_back(std::async(std::launch::async,
+				[this, &folder, &service, &state]()
 				{
-					state.message = Constants::Messages::gathering;
-				}
-
-				m_serviceInformation[folder][service] = status;
-
-				if (status.get<std::string>() == "STARTED")
-				{
-					++m_countStarted;
-				}
-				else if (status.get<std::string>() == "STOPPED")
-				{
-					++m_countStopped;
-				}
-			}
+					retrieveStatusFromServer(folder, service, state);
+				}));
 		}
+	}
+	for (const auto& future : futures)
+	{
+		future.wait();
 	}
 	timeStamp();
 	m_initialStatusGathered = true;
