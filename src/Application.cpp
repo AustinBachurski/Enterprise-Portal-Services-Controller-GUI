@@ -223,11 +223,6 @@ Frame::Frame(const std::string&& title)
 
 	m_statusText->SetContextMenu(contextStatusMenu);
 	contextStatusMenu->Bind(wxEVT_MENU, &Frame::menuAction, this);
-
-	if (!m_configuration.credentialsAquired())
-	{
-		enterCredentials();
-	}
 }
 
 Frame::~Frame()
