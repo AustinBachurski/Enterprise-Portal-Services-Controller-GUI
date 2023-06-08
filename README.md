@@ -3,7 +3,7 @@
 This application provides a simple, user-friendly interface that allows users to quickly view and control the state of services on an Esri Enterprise Portal Server.
 
 
-The directory, name, and state of every service on the server can be obtained in just a few seconds via an easy to understand context menu and selectable text frame.  Users can start or stop all services at once with a couple clicks of the top menu bar, allowing server maintenance tasks or service modifications to be performed without wasting time clicking stop or start on dozens of services using ArcGIS Server Manager, or manually typing out a long list of services in JSON format using ArcGIS Server Administrator Directory.
+The directory, name, and state of every service on the server can be viewed via an easy to understand context menu and selectable text frame.  Users can start or stop all services at once with a couple clicks of the top menu bar, allowing server maintenance tasks or service modifications to be performed without wasting time clicking stop or start on dozens of services using ArcGIS Server Manager, or manually maintaining a long list of services in JSON format using ArcGIS Server Administrator Directory.
 
 ## External Libraries
 
