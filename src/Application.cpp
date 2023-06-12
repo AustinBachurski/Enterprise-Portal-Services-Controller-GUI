@@ -69,7 +69,7 @@ Application::Application(const std::string&& title)
 
 		wxMenuItem* update = fileMenu->Append(
 			MenuID::updateFolders,
-			"Refresh Folders and Services Information");
+			"Refresh Folder and Service Information");
 		update->SetBitmap(wxArtProvider::GetBitmap(
 			wxART_REFRESH, wxART_MENU));
 
