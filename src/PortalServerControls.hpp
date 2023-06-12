@@ -67,6 +67,7 @@ private:
 	bool m_credentialsValid{ false };
 	std::chrono::system_clock::time_point m_expiration;
 	bool m_initialStatusGathered{ false };
+	std::mutex m_mutex;
 	const std::string m_portalServer;
 	const std::string m_referer;
 	const std::string m_startAllUrl;
@@ -87,6 +88,7 @@ private:
 	bool isValidFolder(const std::string& folder) const;
 	nlohmann::json retrieveInformationFromServer();
 	nlohmann::json retrieveInformationFromServer(const std::string& target);
+	void retrieveCountFromServer(const std::string& folder);
 	void retrieveServicesFromServer();
 	void retrieveStatusFromServer(
 		const std::string& folder,

@@ -1,6 +1,7 @@
 #ifndef APPLICATION_HPP
 #define APPLICATION_HPP
 
+#include "AboutWindow.hpp"
 #include "Constants.hpp"
 #include "CustomRichTextCtrl.hpp"
 #include "Configuration.hpp"
@@ -13,28 +14,30 @@
 #include <string_view>
 #include <thread>
 #include <unordered_map>
+#include <wx/aboutdlg.h>
 #include <wx/artprov.h>
 #include <wx/clipbrd.h>
+#include <wx/generic/aboutdlgg.h>
 #include <wx/fdrepdlg.h>
 #include <wx/gdicmn.h>
 #include <wx/progdlg.h>
 #include <wx/wx.h>
 
-class Application : public wxApp
+class Launcher : public wxApp
 {
 public:
 	bool OnInit() override;
 };
 
-class Frame : public wxFrame
+class Application : public wxFrame
 {
 public:
-    Frame(const std::string&& title);
-	~Frame();
+	Application(const std::string&& title);
+	~Application();
 
 private:
 	Configuration m_configuration;
-	// Find text from top to bottom by default.
+	// m_findOptions - find text from top to bottom by default when searching.
 	wxFindReplaceData m_findOptions{ wxFR_DOWN };
 	std::unique_ptr<PortalServerControls> m_portalServerControl;
 	int m_serverCommandMethod;
@@ -48,7 +51,8 @@ private:
 	void displayStatusStarted();
 	void displayStatusStopped();
 	void displayWelcomeMessage();
-	std::string elapsedTimeMessage(const int duration, const std::string& response);
+	std::string elapsedTimeMessage(
+		const int duration, const std::string& response);
 	void enterCredentials();
 	void exportJson(MenuID mode);
 	void keyboardShortcuts(wxKeyEvent& event);
@@ -56,6 +60,7 @@ private:
 	void refreshStatus();
 	void sendBatchCommand(const std::string_view command);
 	void sendSequentialCommand(const std::string_view command);
+	void showAboutWindow();
 	void showFindTextPrompt();
 	void updateCredentials();
 };

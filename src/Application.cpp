@@ -1,15 +1,15 @@
 #include "Application.hpp"
 
-wxIMPLEMENT_APP(Application); // int main()
+wxIMPLEMENT_APP(Launcher); // int main()
 
-bool Application::OnInit()
+bool Launcher::OnInit()
 {
-	Frame* frame = new Frame("Enterprise Portal Services Controller");
-	frame->Show();
+	Application* appWindow = new Application("Enterprise Portal Services Controller");
+	appWindow->Show();
 	return true;
 }
 
-Frame::Frame(const std::string&& title)
+Application::Application(const std::string&& title)
 	: wxFrame(nullptr, wxID_ANY, title, wxPoint(wxDefaultPosition),
 		wxSize(wxDefaultSize), wxDEFAULT_FRAME_STYLE),
 	  m_configuration{},
@@ -21,49 +21,57 @@ Frame::Frame(const std::string&& title)
 
 	wxPanel* panel = new wxPanel(
 		this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
-	panel->Bind(wxEVT_CHAR_HOOK, &Frame::keyboardShortcuts, this);
+	panel->Bind(wxEVT_CHAR_HOOK, &Application::keyboardShortcuts, this);
 
 	// BEGIN MENU BAR
 	wxMenuBar* menuBar = new wxMenuBar();
 
 	wxMenu* fileMenu = new wxMenu();
 		
-		auto credentials = fileMenu->Append(
+		wxMenuItem* credentials = fileMenu->Append(
 			MenuID::changeCredentials,
 			"Change Enterprise Portal Credentials");
 		credentials->SetBitmap(wxArtProvider::GetBitmap(
 			wxART_INFORMATION, wxART_MENU));
 
-			wxMenu* changeMethodSubmenu = new wxMenu();
-			wxMenuItem* changeMethod = fileMenu->AppendSubMenu(
-				changeMethodSubmenu, "Change Server Command Method");
-			changeMethod->SetBitmap(wxArtProvider::GetBitmap(
-				wxART_WARNING, wxART_MENU));
-			changeMethod->SetSubMenu(changeMethodSubmenu);
+		wxMenu* changeMethodSubmenu = new wxMenu();
+		wxMenuItem* changeMethod = fileMenu->AppendSubMenu(
+			changeMethodSubmenu, "Change Server Command Method");
+		changeMethod->SetBitmap(wxArtProvider::GetBitmap(
+			wxART_WARNING, wxART_MENU));
+		changeMethod->SetSubMenu(changeMethodSubmenu);
 
-				m_menuModeSequential = changeMethodSubmenu->Append(
-					MenuID::setMethodSequential,
-					"Sequential Commands", "", wxITEM_CHECK);
-				m_menuModeSequential->SetBitmaps(wxArtProvider::GetBitmap(
-					wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
+			m_menuModeSequential = changeMethodSubmenu->Append(
+				MenuID::setMethodSequential,
+				"Sequential Commands", "", wxITEM_CHECK);
+			m_menuModeSequential->SetBitmaps(wxArtProvider::GetBitmap(
+				wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
 
-				m_menuModeBatch = changeMethodSubmenu->Append(
-					MenuID::setMethodBatch,
-					"Single Batch Command", "", wxITEM_CHECK);
-				m_menuModeBatch->SetBitmaps(wxArtProvider::GetBitmap(
-					wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
+			m_menuModeBatch = changeMethodSubmenu->Append(
+				MenuID::setMethodBatch,
+				"Single Batch Command", "", wxITEM_CHECK);
+			m_menuModeBatch->SetBitmaps(wxArtProvider::GetBitmap(
+				wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
 
-				if (m_serverCommandMethod
-					== Constants::Commands::sequentialMode)
-				{
-					m_menuModeSequential->Check(true);
-					m_menuModeBatch->Check(false);
-				}
-				else
-				{
-					m_menuModeSequential->Check(false);
-					m_menuModeBatch->Check(true);
-				}
+			if (m_serverCommandMethod
+				== Constants::Commands::sequentialMode)
+			{
+				m_menuModeSequential->Check(true);
+				m_menuModeBatch->Check(false);
+			}
+			else
+			{
+				m_menuModeSequential->Check(false);
+				m_menuModeBatch->Check(true);
+			}
+
+		fileMenu->AppendSeparator();
+
+		wxMenuItem* update = fileMenu->Append(
+			MenuID::updateFolders,
+			"Refresh Folders and Services Information");
+		update->SetBitmap(wxArtProvider::GetBitmap(
+			wxART_REFRESH, wxART_MENU));
 
 		fileMenu->AppendSeparator();
 
@@ -158,12 +166,22 @@ Frame::Frame(const std::string&& title)
 		stopAll->SetBitmap(wxArtProvider::GetBitmap(
 			wxART_STOP, wxART_MENU));
 
+	wxMenu* helpMenu = new wxMenu();
+		
+		wxMenuItem* about = helpMenu->Append(
+			MenuID::about,
+			"About");
+		about->SetBitmap(wxArtProvider::GetBitmap(
+			wxART_QUESTION, wxART_MENU));
+
+
 	menuBar->Append(fileMenu, "File");
 	menuBar->Append(statusMenu, "Server Status");
 	menuBar->Append(controlsMenu, "Server Controls");
+	menuBar->Append(helpMenu, "Help");
 
 	SetMenuBar(menuBar);
-	menuBar->Bind(wxEVT_MENU, &Frame::menuAction, this);
+	menuBar->Bind(wxEVT_MENU, &Application::menuAction, this);
 
 	// BEGIN TEXT BOX ITEMS
 	m_statusText = new CustomRichTextCtrl(panel, wxRE_READONLY);
@@ -222,17 +240,17 @@ Frame::Frame(const std::string&& title)
 			wxART_STOP, wxART_MENU));
 
 	m_statusText->SetContextMenu(contextStatusMenu);
-	contextStatusMenu->Bind(wxEVT_MENU, &Frame::menuAction, this);
+	contextStatusMenu->Bind(wxEVT_MENU, &Application::menuAction, this);
 }
 
-Frame::~Frame()
+Application::~Application()
 {
 	wxRect windowSettings = GetRect();
 	m_configuration.updateConfigSettings(
 		windowSettings,m_serverCommandMethod);
 }
 
-void Frame::areYouSure(const std::string_view command)
+void Application::areYouSure(const std::string_view command)
 {
 	wxMessageDialog* youSure = new wxMessageDialog(
 		this,
@@ -256,14 +274,14 @@ void Frame::areYouSure(const std::string_view command)
 	}
 }
 
-void Frame::copyServerStatus()
+void Application::copyServerStatus()
 {
 	m_statusText->SelectAll();
 	m_statusText->Copy();
 	m_statusText->SelectNone();
 }
 
-void Frame::displayStatusAll()
+void Application::displayStatusAll()
 {
 	m_statusText->Clear();
 
@@ -342,7 +360,7 @@ void Frame::displayStatusAll()
 	}
 }
 
-void Frame::displayStatusStarted()
+void Application::displayStatusStarted()
 {
 	m_statusText->Clear();
 
@@ -415,7 +433,7 @@ void Frame::displayStatusStarted()
 	}
 }
 
-void Frame::displayStatusStopped()
+void Application::displayStatusStopped()
 {
 	m_statusText->Clear();
 
@@ -488,7 +506,7 @@ void Frame::displayStatusStopped()
 	}
 }
 
-std::string Frame::elapsedTimeMessage(
+std::string Application::elapsedTimeMessage(
 	const int duration, const std::string& response)
 {
 	int minutes = duration / 60;
@@ -503,7 +521,7 @@ std::string Frame::elapsedTimeMessage(
 	return message;
 }
 
-void Frame::displayWelcomeMessage()
+void Application::displayWelcomeMessage()
 {
 	m_statusText->Clear();
 
@@ -541,14 +559,14 @@ void Frame::displayWelcomeMessage()
 	m_statusText->Newline();
 }
 
-void Frame::enterCredentials()
+void Application::enterCredentials()
 {
 	EnterCredentials* credentialsWindow = 
 		new EnterCredentials(this, m_configuration);
 	credentialsWindow->ShowModal();
 }
 
-void Frame::exportJson(MenuID mode)
+void Application::exportJson(MenuID mode)
 {
 	refreshStatus();
 
@@ -583,7 +601,7 @@ void Frame::exportJson(MenuID mode)
 }
 
 
-void Frame::keyboardShortcuts(wxKeyEvent& event)
+void Application::keyboardShortcuts(wxKeyEvent& event)
 {
 	if (m_portalServerControl->credentialsAreValid())
 	{
@@ -621,7 +639,7 @@ void Frame::keyboardShortcuts(wxKeyEvent& event)
 	}
 }
 
-void Frame::menuAction(wxCommandEvent& event)
+void Application::menuAction(wxCommandEvent& event)
 {
 	if (m_portalServerControl->credentialsAreValid())
 	{
@@ -638,6 +656,11 @@ void Frame::menuAction(wxCommandEvent& event)
 			}
 			break;
 		}
+		case MenuID::updateFolders:
+			updateCredentials();
+			refreshStatus();
+			displayStatusAll();
+			break;
 
 		case MenuID::quit:
 			Close();
@@ -655,7 +678,6 @@ void Frame::menuAction(wxCommandEvent& event)
 			sequentialSet->ShowModal();
 			break;
 		}
-
 		case MenuID::setMethodBatch:
 		{
 			m_serverCommandMethod = Constants::Commands::batchMode;
@@ -668,7 +690,6 @@ void Frame::menuAction(wxCommandEvent& event)
 			batchSet->ShowModal();
 			break;
 		}
-
 		case MenuID::find:
 			showFindTextPrompt();
 			break;
@@ -723,6 +744,9 @@ void Frame::menuAction(wxCommandEvent& event)
 		case MenuID::stop:
 			areYouSure(Constants::Commands::STOP);
 			break;
+		case MenuID::about:
+			showAboutWindow();
+			break;
 		default:
 			break;
 		}
@@ -747,6 +771,9 @@ void Frame::menuAction(wxCommandEvent& event)
 			}
 			break;
 		}
+		case MenuID::about:
+			showAboutWindow();
+			break;
 		default:
 			wxMessageDialog* noCred = new wxMessageDialog(this,
 				Constants::Messages::credentialsRequired,
@@ -757,7 +784,7 @@ void Frame::menuAction(wxCommandEvent& event)
 	}
 }
 
-void Frame::refreshStatus()
+void Application::refreshStatus()
 {
 	threadState state(0,
 		m_portalServerControl->getCountTotal(),
@@ -770,11 +797,11 @@ void Frame::refreshStatus()
 		state.progressMax,
 		this,
 		wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+	progress.Show();
 
 	std::thread update([this, &state]()
 		{ m_portalServerControl->updateStatus(state); });
 	update.detach();
-	progress.Show();
 	
 	while (state.working)
 	{
@@ -784,7 +811,7 @@ void Frame::refreshStatus()
 	displayStatusAll();
 }
 
-void Frame::sendBatchCommand(const std::string_view command)
+void Application::sendBatchCommand(const std::string_view command)
 {
 	std::chrono::time_point start{ std::chrono::system_clock::now() };
 
@@ -828,7 +855,7 @@ void Frame::sendBatchCommand(const std::string_view command)
 	done->ShowModal();
 }
 
-void Frame::sendSequentialCommand(const std::string_view command)
+void Application::sendSequentialCommand(const std::string_view command)
 {
 	std::chrono::time_point start{ std::chrono::system_clock::now() };
 
@@ -878,7 +905,13 @@ void Frame::sendSequentialCommand(const std::string_view command)
 	done->ShowModal();
 }
 
-void Frame::showFindTextPrompt()
+void Application::showAboutWindow()
+{
+	AboutWindow* aboutWindow = new AboutWindow(this);
+	aboutWindow->Show();
+}
+
+void Application::showFindTextPrompt()
 {
 	wxFindReplaceDialog* findTextWindow = new wxFindReplaceDialog(
 		this, &m_findOptions, "Find");
@@ -900,14 +933,14 @@ void Frame::showFindTextPrompt()
 	findTextWindow->Show();
 }
 
-void Frame::updateCredentials()
+void Application::updateCredentials()
 {
 	std::promise<void> promise;
 	std::future<void> future = promise.get_future();
 
 	wxGenericProgressDialog progress(
-		"Updating credentials, please wait...",
-		"Updating Credentials",
+		"Updating...",
+		"Updating",
 		10,
 		this,
 		wxPD_APP_MODAL | wxPD_AUTO_HIDE);

@@ -8,10 +8,11 @@
 
 enum MenuID
 {
-	quit,
 	changeCredentials,
 	setMethodSequential,
 	setMethodBatch,
+	updateFolders,
+	quit,
 	find,
 	copySelection,
 	copyAll,
@@ -23,6 +24,7 @@ enum MenuID
 	exportStop,
 	start,
 	stop,
+	about,
 };
 
 struct threadState
@@ -79,7 +81,7 @@ namespace Constants
 			R"({"status": "Error"})");
 		
 		inline const nlohmann::json jsonNothingToDo = nlohmann::json::parse(
-			R"({"status": "Services are already in requested state."})");
+			R"({"status": "Services are already at requested state."})");
 
 		inline const wxString noResponse{
 			"No response was received from the server, is your url correct?\n" };
@@ -97,7 +99,7 @@ namespace Constants
 
 		inline const wxString waiting{
 			"Commands sent, awaiting server responses."
-			"\nThis can take a couple minutes..." };
+			"\nThis can take a few minutes..." };
 
 		inline const wxString waitCommand{
 			"Assembling command and sending to server, please wait..." };
@@ -122,6 +124,7 @@ namespace Constants
 	namespace Words
 	{
 		inline std::string_view folders{ "folders" };
+		inline std::string root{ "Root" };
 		inline std::string_view services{ "services" };
 	}
 }
