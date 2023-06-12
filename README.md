@@ -43,7 +43,7 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
 
 ### From here, several menu bar options are available:
 
-* ```File``` menu allows you to update Enterprise Portal Credentials, Change the Server Command Method, or Quit.
+* ```File``` menu allows you to update Enterprise Portal Credentials, Change the Server Command Method, Refresh Folder and Service Information, or Quit.
 Services on an Esri Enterprise Portal server can be controlled on two ways:
     1. ```Sequential Commands``` - where each service is individually commanded to start or stop.
     2. ```Single Batch Command``` - where a JSON list of services to start or stop is sent to the server in a single command.
@@ -58,6 +58,8 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
     2. ```Ctrl + F``` or ```F3``` will open the find text dialog.
     3. ```Ctrl + A``` will select all the text in the text box.
     4. ```Ctrl + C``` will copy the selected text from the text box.
+
+* ```Help``` menu will display an 'About' window with version information, credits, and a disclaimer.
  
 * The tool also saves the server command mode setting, window size, and window position to the ```config.ini``` file on exit.
 
