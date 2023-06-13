@@ -126,7 +126,7 @@ namespace Constants
 	namespace Words
 	{
 		inline std::string_view folders{ "folders" };
-		inline std::string root{ "Root" };
+		inline std::string_view root{ "Root" };
 		inline std::string_view services{ "services" };
 	}
 }
