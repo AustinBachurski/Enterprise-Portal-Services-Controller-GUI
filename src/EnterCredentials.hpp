@@ -2,8 +2,10 @@
 #define ENTERCREDENTIALS_HPP
 
 #include "Configuration.hpp"
-#include <string>
+
 #include <wx/wx.h>
+
+#include <string>
 
 class Configuration;
 

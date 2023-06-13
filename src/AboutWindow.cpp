@@ -14,7 +14,7 @@ AboutWindow::AboutWindow(wxWindow* parent)
 	name->SetFont(nameFont);
 
 	wxStaticText* version = new wxStaticText(panel, wxID_ANY,
-		"Version: *Place Holder* - Built June 12, 2023"); //TODO - Set Version
+		"Version: *Place Holder* - Built June 12, 2023"); //TODO - Set Version & Build Date
 	wxStaticText* author = new wxStaticText(panel, wxID_ANY,
 		"Author: Austin Bachurski");
 

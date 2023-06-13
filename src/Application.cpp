@@ -600,7 +600,6 @@ void Application::exportJson(MenuID mode)
 	}
 }
 
-
 void Application::keyboardShortcuts(wxKeyEvent& event)
 {
 	if (m_portalServerControl->credentialsAreValid())

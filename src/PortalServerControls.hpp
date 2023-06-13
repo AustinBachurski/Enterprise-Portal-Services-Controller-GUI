@@ -3,10 +3,14 @@
 
 #include "Configuration.hpp"
 #include "Constants.hpp"
-#include <algorithm>
+
 #include <cpr/cpr.h>
-#include <execution>
 #include <nlohmann/json.hpp>
+#include <wx/wx.h>
+#include <wx/progdlg.h>
+
+#include <algorithm>
+#include <execution>
 #include <chrono>
 #include <format>
 #include <future>
@@ -14,8 +18,6 @@
 #include <string>
 #include <string_view>
 #include <thread>
-#include <wx/wx.h>
-#include <wx/progdlg.h>
 
 class Configuration;
 
@@ -88,12 +90,12 @@ private:
 	bool isValidFolder(const std::string& folder) const;
 	nlohmann::json retrieveInformationFromServer();
 	nlohmann::json retrieveInformationFromServer(const std::string& target);
-	void retrieveCountFromServer(const std::string& folder);
-	void retrieveServicesFromServer();
-	void retrieveStatusFromServer(
+	void retrieveCount(const std::string& folder);
+	void retrieveServices();
+	void retrieveStatus(
 		const std::string& folder,
 		const std::string& service);
-	void retrieveStatusFromServer(
+	void retrieveStatus(
 		const std::string& folder,
 		const std::string& service,
 		threadState& state);

@@ -3,13 +3,15 @@
 
 #include "EnterCredentials.hpp"
 #include "Constants.hpp"
+
+#include <wx/gdicmn.h>
+#include <wx/wx.h>
+
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <wx/gdicmn.h>
-#include <wx/wx.h>
 
 class Configuration
 {

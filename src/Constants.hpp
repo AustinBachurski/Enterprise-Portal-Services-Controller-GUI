@@ -2,7 +2,9 @@
 #define NAMESPACE_CONSTANTS_HPP
 
 #include "nlohmann/json.hpp"
+
 #include <wx/wx.h>
+
 #include <string>
 #include <string_view>
 

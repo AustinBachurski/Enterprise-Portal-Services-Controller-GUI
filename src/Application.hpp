@@ -7,6 +7,14 @@
 #include "Configuration.hpp"
 #include "EnterCredentials.hpp"
 #include "PortalServerControls.hpp"
+
+#include <wx/artprov.h>
+#include <wx/clipbrd.h>
+#include <wx/fdrepdlg.h>
+#include <wx/gdicmn.h>
+#include <wx/progdlg.h>
+#include <wx/wx.h>
+
 #include <chrono>
 #include <future>
 #include <memory>
@@ -14,14 +22,6 @@
 #include <string_view>
 #include <thread>
 #include <unordered_map>
-#include <wx/aboutdlg.h>
-#include <wx/artprov.h>
-#include <wx/clipbrd.h>
-#include <wx/generic/aboutdlgg.h>
-#include <wx/fdrepdlg.h>
-#include <wx/gdicmn.h>
-#include <wx/progdlg.h>
-#include <wx/wx.h>
 
 class Launcher : public wxApp
 {

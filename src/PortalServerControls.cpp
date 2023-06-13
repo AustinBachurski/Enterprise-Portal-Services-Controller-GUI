@@ -19,7 +19,7 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 		if (tokenIsValid())
 		{
 			setServiceCount();
-			retrieveServicesFromServer();
+			retrieveServices();
 		}
 		else
 		{
@@ -115,7 +115,6 @@ std::vector<std::string> PortalServerControls::generateTargets(
 	return list;
 }
 
-
 std::string PortalServerControls::generateJson(const std::string_view command)
 {
 	std::string list{"{\"services\":["};
@@ -140,7 +139,7 @@ std::string PortalServerControls::generateJson(const std::string_view command)
 		}
 	}
 	// Remove the trailing ','  and append "]}" to properly terminate the JSON.
-	if (list.rfind(',') != std::string::npos) // TODO C++23
+	if (list.rfind(',') != std::string::npos)
 	{
 		list.replace(list.rfind(','), 2, "]}");
 	}
@@ -244,11 +243,11 @@ nlohmann::json PortalServerControls::retrieveInformationFromServer(
 	}
 }
 
-void PortalServerControls::retrieveServicesFromServer()
+void PortalServerControls::retrieveServices()
 {
 	nlohmann::json serverResponse{};
 
-	for (const auto& [folder, services] : m_serviceInformation)
+	for (const auto& [folder, _unused_] : m_serviceInformation)
 	{
 		if (folder == Constants::Words::root)
 		{
@@ -273,10 +272,11 @@ void PortalServerControls::retrieveServicesFromServer()
 	}
 }
 
-void PortalServerControls::retrieveStatusFromServer(
+void PortalServerControls::retrieveStatus(
 	const std::string& folder,
 	const std::string& service)
 {
+	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 	nlohmann::json serverResponse{};
 
 	if (folder == Constants::Words::root)
@@ -292,7 +292,7 @@ void PortalServerControls::retrieveStatusFromServer(
 
 	for (const auto& status : serverResponse["realTimeState"])
 	{
-		std::lock_guard<std::mutex> guard(m_mutex);
+		lock.lock();
 		m_serviceInformation[folder][service] = status;
 
 		if (status.get<std::string>() == "STARTED")
@@ -303,14 +303,16 @@ void PortalServerControls::retrieveStatusFromServer(
 		{
 			++m_countStopped;
 		}
+		lock.unlock();
 	}
 }
 
-void PortalServerControls::retrieveStatusFromServer(
+void PortalServerControls::retrieveStatus(
 	const std::string& folder,
 	const std::string& service,
 	threadState& state)
 {
+	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 	nlohmann::json serverResponse{};
 
 	if (folder == Constants::Words::root)
@@ -326,7 +328,7 @@ void PortalServerControls::retrieveStatusFromServer(
 
 	for (const auto& status : serverResponse["realTimeState"])
 	{
-		std::lock_guard<std::mutex> guard(m_mutex);
+		lock.lock();
 		++state.progressValue;
 		if (state.message != Constants::Messages::gathering)
 		{
@@ -343,6 +345,7 @@ void PortalServerControls::retrieveStatusFromServer(
 		{
 			++m_countStopped;
 		}
+		lock.unlock();
 	}
 }
 
@@ -353,23 +356,17 @@ void PortalServerControls::sendBatchServerCommand(
 	updateStatus();
 	const std::string services = generateJson(command);
 
-	// TODO C++23
-	auto workToDo = [](const std::string& services)->bool
-	{ return services.find("type") != std::string::npos; };
-
-	if (workToDo(services))
+	// If "type" is not in services, no commands were appended to the JSON
+	// string because services were already at requested state.
+	if (services.find("type") != std::string::npos)
 	{
 		cpr::Response response = cpr::Post(
-			cpr::Url
-		{
-			command == Constants::Commands::START ? m_startAllUrl : m_stopAllUrl
-		},
-			cpr::Payload
-		{
+			cpr::Url{ command == Constants::Commands::START
+					  ? m_startAllUrl : m_stopAllUrl },
+			cpr::Payload{
 			{ "services", services},
 			{ "token", m_token },
-			{ "f", "json" }
-		});
+			{ "f", "json" } });
 
 		nlohmann::json result = nlohmann::json::parse(response.text);
 		updateStatus();
@@ -387,6 +384,7 @@ void PortalServerControls::sendSequentialServerCommands(
 	const std::string_view command,
 	threadState& state)
 {
+	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 	const int seventyFivePercentProgress{ m_countTotal * 3 };
 	updateStatus(state);
 	state.message = "Generating commands and sending to server.";
@@ -401,7 +399,7 @@ void PortalServerControls::sendSequentialServerCommands(
 			std::execution::par, targetServices.begin(), targetServices.end(),
 			[&](const std::string& targetUrl)
 			{
-				std::lock_guard<std::mutex> guard(m_mutex);
+				lock.lock();
 				++state.progressValue;
 
 				results.emplace_back(URLandFuture(targetUrl,
@@ -410,6 +408,7 @@ void PortalServerControls::sendSequentialServerCommands(
 						{
 							return issueCommand(targetUrl);
 						})));
+				lock.unlock();
 			});
 
 		while (!results.empty())
@@ -446,7 +445,7 @@ void PortalServerControls::sendSequentialServerCommands(
 					std::execution::par, buffer.begin(), buffer.end(),
 					[&](const std::string& targetUrl)
 					{
-						std::lock_guard<std::mutex> guard(m_mutex);
+						lock.lock();
 						++state.progressValue;
 
 						results.emplace_back(URLandFuture(targetUrl,
@@ -455,6 +454,7 @@ void PortalServerControls::sendSequentialServerCommands(
 								{
 									return issueCommand(targetUrl);
 								})));
+						lock.unlock();
 					});
 
 				std::erase_if(results,
@@ -475,17 +475,19 @@ void PortalServerControls::sendSequentialServerCommands(
 	state.working = false;
 }
 
-void PortalServerControls::retrieveCountFromServer(const std::string& folder)
+void PortalServerControls::retrieveCount(const std::string& folder)
 {
 	if (folder != Constants::Words::root)
 	{
+		std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 		nlohmann::json serverResponse = retrieveInformationFromServer(folder);
 
 		for (const auto& service
 			: serverResponse[Constants::Words::services])
 		{
-			std::lock_guard<std::mutex> guard(m_mutex);
+			lock.lock();
 			++m_countTotal;
+			lock.unlock();
 		}
 	}
 }
@@ -523,7 +525,7 @@ void PortalServerControls::setServiceCount()
 			futures.emplace_back(std::async(std::launch::async,
 				[this, &folder]()
 				{
-					retrieveCountFromServer(folder);
+					retrieveCount(folder);
 				}));
 		}
 		for (const auto& future : futures)
@@ -567,7 +569,7 @@ void PortalServerControls::updateStatus()
 			futures.emplace_back(std::async(std::launch::async, 
 				[this, &folder, &service]()
 				{
-					retrieveStatusFromServer(folder, service);
+					retrieveStatus(folder, service);
 				}));
 		}
 	}
@@ -592,7 +594,7 @@ void PortalServerControls::updateStatus(threadState& state)
 			futures.emplace_back(std::async(std::launch::async,
 				[this, &folder, &service, &state]()
 				{
-					retrieveStatusFromServer(folder, service, state);
+					retrieveStatus(folder, service, state);
 				}));
 		}
 	}
