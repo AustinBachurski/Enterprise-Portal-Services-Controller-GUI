@@ -495,7 +495,7 @@ void PortalServerControls::retrieveCount(const std::string& folder)
 void PortalServerControls::setServiceCount()
 {
 	m_countTotal = 0;
-	m_serviceInformation[Constants::Words::root];
+	m_serviceInformation[ std::string(Constants::Words::root) ];
 	std::vector<std::future<void>> futures{};
 	nlohmann::json serverResponse = retrieveInformationFromServer();
 
