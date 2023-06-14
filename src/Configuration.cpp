@@ -1,10 +1,7 @@
 #include "Configuration.hpp"
 
 Configuration::Configuration()
-    : m_encryptionKey{ generateKey() },
-      m_password{},
-      m_portalUrl{},
-      m_username{}
+    : m_encryptionKey{ generateKey() }
 {
     readConfig();
 }
@@ -165,7 +162,7 @@ void Configuration::readConfig()
             std::ifstream configFile(m_configFile);
             if (configFile.is_open())
             {
-                std::string data{};
+                std::string data;
 
                 while (std::getline(configFile, data))
                 {
@@ -225,9 +222,9 @@ void Configuration::updateConfigSettings(
 }
 
 void Configuration::writeConfig(
-    const std::string&& portalUrl,
-    const std::string&& username,
-    const std::string&& password)
+    const std::string portalUrl,
+    const std::string username,
+    const std::string password)
 {
     // Open file for writing, discard existing data.
     std::ofstream configFile(m_configFile, std::ios::out, std::ios::trunc);

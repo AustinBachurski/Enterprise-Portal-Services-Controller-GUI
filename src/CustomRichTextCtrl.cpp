@@ -2,10 +2,7 @@
 
 CustomRichTextCtrl::CustomRichTextCtrl(wxWindow* parent, long style)
 	: wxRichTextCtrl(parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
-		  wxDefaultSize, style, wxDefaultValidator, wxEmptyString),
-	  m_caretPosition{},
-	  m_findString{},
-	  m_text{}
+		  wxDefaultSize, style, wxDefaultValidator, wxEmptyString)
 {}
 
 void CustomRichTextCtrl::findNotFound(wxFindReplaceDialog* findTextWindow,

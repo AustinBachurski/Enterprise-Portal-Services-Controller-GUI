@@ -9,10 +9,9 @@ bool Launcher::OnInit()
 	return true;
 }
 
-Application::Application(const std::string&& title)
+Application::Application(const std::string title)
 	: wxFrame(nullptr, wxID_ANY, title, wxPoint(wxDefaultPosition),
 		wxSize(wxDefaultSize), wxDEFAULT_FRAME_STYLE),
-	  m_configuration{},
 	  m_portalServerControl{
 		  std::make_unique<PortalServerControls>(m_configuration) },
 	  m_serverCommandMethod{ m_configuration.getCommandMethod() }

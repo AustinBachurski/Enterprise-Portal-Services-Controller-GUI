@@ -19,9 +19,9 @@ public:
 	void findText(wxFindReplaceDialog* findTextWindow, wxFindDialogEvent& event);
 
 private:
-	int m_caretPosition;
+	int m_caretPosition{ 0 };
 	std::string m_findString;
-	int m_lastFlags{ -1 };
+	int m_lastFlags{ 0 };
 	std::string m_text;
 
 	void findNotFound(

@@ -31,9 +31,9 @@ public:
 	void updateConfigSettings(
 		const wxRect& windowSettings, const int commandMethod);
 	void writeConfig( // Automatically calls readConfig() after writing.
-		const std::string&& portalUrl,
-		const std::string&& username,
-		const std::string&& password);
+		const std::string portalUrl,
+		const std::string username,
+		const std::string password);
 
 private:
 	int m_commandMethod{ Constants::Commands::sequentialMode };

@@ -32,7 +32,7 @@ public:
 class Application : public wxFrame
 {
 public:
-	Application(const std::string&& title);
+	Application(const std::string title);
 	~Application();
 
 private:

@@ -35,9 +35,8 @@ public:
 	 * |....Service Four, status	|
 	 * ------------------------------
 	 */
-	std::unordered_map<
-		std::string, std::unordered_map<
-			std::string, std::string>> m_serviceInformation;
+	std::unordered_map<std::string,
+		std::unordered_map<std::string, std::string>> m_serviceInformation;
 
 	PortalServerControls(Configuration& configuration);
 
@@ -78,7 +77,7 @@ private:
 	std::string m_token;
 	const std::string m_tokenUrl;
 
-	struct URLandFuture
+	struct URLandServerResponse
 	{
 		std::string url;
 		std::future<nlohmann::json> serverResponse;
@@ -88,8 +87,8 @@ private:
 	std::vector<std::string> generateTargets(const std::string_view command);
 	nlohmann::json issueCommand(const std::string url);
 	bool isValidFolder(const std::string& folder) const;
-	nlohmann::json retrieveInformationFromServer();
-	nlohmann::json retrieveInformationFromServer(const std::string& target);
+	nlohmann::json retrieveInformationFromServer(
+		const std::string& target = "");
 	void retrieveCount(const std::string& folder);
 	void retrieveServices();
 	void retrieveStatus(
