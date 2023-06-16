@@ -72,7 +72,7 @@ private:
 	const std::string m_portalServer;
 	const std::string m_referer;
 	const std::string m_startAllUrl;
-	std::string m_statusTime{ Constants::Messages::initialStatus };
+	std::string m_statusTime{ Messages::initialStatus };
 	const std::string m_stopAllUrl;
 	std::string m_token;
 	const std::string m_tokenUrl;
@@ -87,8 +87,7 @@ private:
 	std::vector<std::string> generateTargets(const std::string_view command);
 	nlohmann::json issueCommand(const std::string url);
 	bool isValidFolder(const std::string& folder) const;
-	nlohmann::json retrieveInformationFromServer(
-		const std::string& target = "");
+	nlohmann::json retrieveInformationFromServer(const std::string& target = "");
 	void retrieveCount(const std::string& folder);
 	void retrieveServices();
 	void retrieveStatus(

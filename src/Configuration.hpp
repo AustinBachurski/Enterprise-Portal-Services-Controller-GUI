@@ -29,14 +29,15 @@ public:
 	const wxRect& getWindowSettings() const;
 	void readConfig();
 	void updateConfigSettings(
-		const wxRect& windowSettings, const int commandMethod);
+		const wxRect& windowSettings,
+		const int commandMethod);
 	void writeConfig( // Automatically calls readConfig() after writing.
 		const std::string portalUrl,
 		const std::string username,
 		const std::string password);
 
 private:
-	int m_commandMethod{ Constants::Commands::sequentialMode };
+	int m_commandMethod{ Commands::sequentialMode };
 	const std::string m_configDirectory{ "./config" };
 	const std::string m_configFile{ "./config/config.ini" };
 	const std::string m_encryptionKey;

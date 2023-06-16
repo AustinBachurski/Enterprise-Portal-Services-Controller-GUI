@@ -21,7 +21,7 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 		}
 		else
 		{
-			m_statusTime = Constants::Messages::serverError;
+			m_statusTime = Messages::serverError;
 		}
 	}
 	else
@@ -60,12 +60,12 @@ void PortalServerControls::aquireToken()
 		}
 		else if (result.contains("error"))
 		{
-			m_statusTime = Constants::Messages::serverError;
+			m_statusTime = Messages::serverError;
 
 			std::string details = result["error"]["details"][0];
 
 			wxMessageDialog* tokenError = new wxMessageDialog(NULL,
-				Constants::Messages::tokenError + details,
+				Messages::tokenError + details,
 				"Token Error",
 				wxOK | wxICON_ERROR);
 			tokenError->ShowModal();
@@ -73,10 +73,10 @@ void PortalServerControls::aquireToken()
 	}
 	else
 	{
-		m_statusTime = Constants::Messages::serverError;
+		m_statusTime = Messages::serverError;
 
 		wxMessageDialog* tokenError = new wxMessageDialog(NULL,
-			Constants::Messages::noResponse 
+			Messages::noResponse 
 			+ "URL: " + m_configuration.getPortal(),
 			"No Response from Server",
 			wxOK | wxICON_ERROR);
@@ -102,10 +102,9 @@ std::vector<std::string> PortalServerControls::generateTargets(
 			{
 				list.emplace_back(
 					m_portalServer
-					+ (folder == Constants::Words::root ? "" : folder + '/')
+					+ (folder == ServerItem::root ? "" : folder + '/')
 					+ service
-					+ (command == Constants::Commands::START
-						? "/start" : "/stop")
+					+ (command == Commands::START ? "/start" : "/stop")
 				);
 			}
 		}
@@ -124,14 +123,14 @@ std::string PortalServerControls::generateJson(const std::string_view command)
 			if (status != command)
 			{
 				list.append(
-					Constants::JSON::openBrace 
-					+ Constants::JSON::folderName
-					+ (folder == Constants::Words::root ? "" : folder)
-					+ Constants::JSON::serviceName
+					JSON::openBrace 
+					+ JSON::folderName
+					+ (folder == ServerItem::root ? "" : folder)
+					+ JSON::serviceName
 					+ service.substr(0, service.find('.'))
-					+ Constants::JSON::type
+					+ JSON::type
 					+ service.substr(service.find('.') + 1)
-					+ Constants::JSON::closeBrace
+					+ JSON::closeBrace
 				);
 			}
 		}
@@ -198,13 +197,12 @@ bool PortalServerControls::isValidFolder(const std::string& folder) const
 
 void PortalServerControls::retrieveCount(const std::string& folder)
 {
-	if (folder != Constants::Words::root)
+	if (folder != ServerItem::root)
 	{
 		std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 		nlohmann::json serverResponse = retrieveInformationFromServer(folder);
 
-		for (const auto& service
-			: serverResponse[Constants::Words::services])
+		for (const auto& service : serverResponse[ServerItem::services])
 		{
 			lock.lock();
 			++m_countTotal;
@@ -237,7 +235,7 @@ nlohmann::json PortalServerControls::retrieveInformationFromServer(
 	}
 	else
 	{
-		return Constants::Messages::jsonError;
+		return Messages::jsonError;
 	}
 }
 
@@ -247,7 +245,7 @@ void PortalServerControls::retrieveServices()
 
 	for (const auto& [folder, _unused_] : m_serviceInformation)
 	{
-		if (folder != Constants::Words::root)
+		if (folder != ServerItem::root)
 		{
 			serverResponse = retrieveInformationFromServer(folder);
 		}
@@ -256,10 +254,9 @@ void PortalServerControls::retrieveServices()
 			serverResponse = retrieveInformationFromServer();
 		}
 
-		if (serverResponse.contains(Constants::Words::services))
+		if (serverResponse.contains(ServerItem::services))
 		{
-			for (const auto& service
-				: serverResponse[Constants::Words::services])
+			for (const auto& service : serverResponse[ServerItem::services])
 			{
 				m_serviceInformation[folder]
 					[service["serviceName"].get<std::string>()
@@ -277,7 +274,7 @@ void PortalServerControls::retrieveStatus(
 	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 	nlohmann::json serverResponse{};
 
-	if (folder == Constants::Words::root)
+	if (folder == ServerItem::root)
 	{
 		serverResponse = retrieveInformationFromServer(
 			service + "/status");
@@ -313,7 +310,7 @@ void PortalServerControls::retrieveStatus(
 	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 	nlohmann::json serverResponse{};
 
-	if (folder == Constants::Words::root)
+	if (folder == ServerItem::root)
 	{
 		serverResponse = retrieveInformationFromServer(
 			service + "/status");
@@ -328,9 +325,9 @@ void PortalServerControls::retrieveStatus(
 	{
 		lock.lock();
 		++state.progressValue;
-		if (state.message != Constants::Messages::gathering)
+		if (state.message != Messages::gathering)
 		{
-			state.message = Constants::Messages::gathering;
+			state.message = Messages::gathering;
 		}
 
 		m_serviceInformation[folder][service] = status;
@@ -359,8 +356,7 @@ void PortalServerControls::sendBatchServerCommand(
 	if (services.find("type") != std::string::npos)
 	{
 		cpr::Response response = cpr::Post(
-			cpr::Url{ command == Constants::Commands::START
-					  ? m_startAllUrl : m_stopAllUrl },
+			cpr::Url{ command == Commands::START ? m_startAllUrl : m_stopAllUrl },
 			cpr::Payload
 			{
 				{ "services", services},
@@ -375,7 +371,7 @@ void PortalServerControls::sendBatchServerCommand(
 	}
 	else
 	{
-		promise.set_value(Constants::Messages::jsonNothingToDo);
+		promise.set_value(Messages::jsonNothingToDo);
 	}
 }
 
@@ -416,7 +412,7 @@ void PortalServerControls::sendSequentialServerCommands(
 			for (const auto& urlAndServerResponse : results)
 			{
 				urlAndServerResponse.serverResponse.wait();
-				state.message = Constants::Messages::waiting;
+				state.message = Messages::waiting;
 
 				if (state.progressValue < seventyFivePercentProgress)
 				{
@@ -467,27 +463,26 @@ void PortalServerControls::sendSequentialServerCommands(
 		state.progressValue = seventyFivePercentProgress;
 		updateStatus(state);
 
-		promise.set_value(Constants::Messages::success);
+		promise.set_value(Messages::success);
 		state.working = false;
 		return;
 	}
-	promise.set_value(Constants::Messages::jsonNothingToDo);
+	promise.set_value(Messages::jsonNothingToDo);
 	state.working = false;
 }
 
 void PortalServerControls::setServiceCount()
 {
 	m_countTotal = 0;
-	m_serviceInformation[ std::string(Constants::Words::root) ];
+	m_serviceInformation[ std::string(ServerItem::root) ];
 	std::vector<std::future<void>> futures;
 	nlohmann::json serverResponse = retrieveInformationFromServer();
 
-	if (serverResponse.contains(Constants::Words::folders)
-		&& serverResponse.contains(Constants::Words::services))
+	if (serverResponse.contains(ServerItem::folders)
+		&& serverResponse.contains(ServerItem::services))
 	{
 		// Add folders to the status container.
-		for (const auto& folder
-			: serverResponse[Constants::Words::folders])
+		for (const auto& folder	: serverResponse[ServerItem::folders])
 		{
 			if (isValidFolder(folder))
 			{
@@ -496,8 +491,7 @@ void PortalServerControls::setServiceCount()
 		}
 
 		// Count services in root directory.
-		for (const auto& service
-			: serverResponse[Constants::Words::services])
+		for (const auto& service : serverResponse[ServerItem::services])
 		{
 			++m_countTotal;
 		}

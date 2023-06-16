@@ -20,8 +20,7 @@ private:
 	wxTextCtrl* m_usernameEntryBox{ nullptr };
 	wxTextCtrl* m_passwordEntryBox{ nullptr };
 
-	void captureCredentials(
-		wxCommandEvent& event, Configuration& configuration);
+	void captureCredentials(wxCommandEvent& event, Configuration& configuration);
 };
 
 #endif

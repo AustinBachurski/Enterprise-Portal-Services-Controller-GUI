@@ -29,35 +29,35 @@ void CustomRichTextCtrl::findText(
 {
 	switch (event.GetFlags())
 	{
-	case Constants::SearchMethod::topToBottom:
+	case SearchMethod::topToBottom:
 		searchTopToBottom(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::topToBottom_matchBoth:
+	case SearchMethod::topToBottom_matchBoth:
 		searchTopToBottomMatchBoth(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::topToBottomMatchCase:
+	case SearchMethod::topToBottomMatchCase:
 		searchTopToBottomMatchCase(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::topToBottomMatchWord:
+	case SearchMethod::topToBottomMatchWord:
 		searchTopToBottomMatchWord(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::bottomToTop:
+	case SearchMethod::bottomToTop:
 		searchBottomToTop(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::bottomToTopMatchBoth:
+	case SearchMethod::bottomToTopMatchBoth:
 		searchTopToBottomMatchBoth(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::bottomToTopMatchCase:
+	case SearchMethod::bottomToTopMatchCase:
 		searchBottomToTopMatchCase(findTextWindow, event);
 		return;
 
-	case Constants::SearchMethod::bottomToTopMatchWord:
+	case SearchMethod::bottomToTopMatchWord:
 		searchBottomToTopMatchWord(findTextWindow, event);
 		return;
 

@@ -15,7 +15,7 @@ void Configuration::createDirectory()
     catch (std::filesystem::filesystem_error)
     {
         wxMessageDialog* directoryError = new wxMessageDialog(NULL,
-            Constants::Messages::directoryError,
+            Messages::directoryError,
             "Directory Error", wxOK | wxICON_ERROR);
         directoryError->ShowModal();
     }
@@ -24,7 +24,7 @@ void Configuration::createDirectory()
     if (!std::filesystem::exists(m_configDirectory))
     {
         wxMessageDialog* directoryError = new wxMessageDialog(NULL,
-            Constants::Messages::directoryError,
+            Messages::directoryError,
             "Directory Error", wxOK | wxICON_ERROR);
         directoryError->ShowModal();
     }
@@ -59,10 +59,9 @@ void Configuration::enterCredentials()
 
 std::string Configuration::generateKey()
 {
-    const char upperBounds{ 126 };
-    const char lowerBounds{ 31 };
-    const int keySize{
-        static_cast<int>(upperBounds) - static_cast<int>(lowerBounds) };
+    constexpr int upperBounds{ 126 };
+    constexpr int lowerBounds{ 31 };
+    constexpr int keySize{ upperBounds - lowerBounds };
     std::string key;
     key.reserve(keySize);
 
@@ -252,7 +251,7 @@ void Configuration::writeConfig(
     else
     {
         wxMessageDialog* fileError = new wxMessageDialog(NULL,
-            Constants::Messages::fileError,
+            Messages::fileError,
             "Config File Error", wxOK | wxICON_ERROR);
         fileError->ShowModal();
         return;
