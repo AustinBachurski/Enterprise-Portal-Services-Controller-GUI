@@ -202,11 +202,14 @@ void PortalServerControls::retrieveCount(const std::string& folder)
 		std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 		nlohmann::json serverResponse = retrieveInformationFromServer(folder);
 
-		for (const auto& service : serverResponse[ServerItem::services])
+		if (serverResponse.contains(ServerItem::services))
 		{
-			lock.lock();
-			++m_countTotal;
-			lock.unlock();
+			for (const auto& service : serverResponse[ServerItem::services])
+			{
+				lock.lock();
+				++m_countTotal;
+				lock.unlock();
+			}
 		}
 	}
 }
@@ -235,7 +238,7 @@ nlohmann::json PortalServerControls::retrieveInformationFromServer(
 	}
 	else
 	{
-		return Messages::jsonError;
+		return {};
 	}
 }
 
@@ -285,20 +288,23 @@ void PortalServerControls::retrieveStatus(
 			folder + '/' + service + "/status");
 	}
 
-	for (const auto& status : serverResponse["realTimeState"])
+	if (serverResponse.contains(ServerItem::realTimeState))
 	{
-		lock.lock();
-		m_serviceInformation[folder][service] = status;
+		for (const auto& status : serverResponse[ServerItem::realTimeState])
+		{
+			lock.lock();
+			m_serviceInformation[folder][service] = status;
 
-		if (status.get<std::string>() == "STARTED")
-		{
-			++m_countStarted;
+			if (status.get<std::string>() == "STARTED")
+			{
+				++m_countStarted;
+			}
+			else if (status.get<std::string>() == "STOPPED")
+			{
+				++m_countStopped;
+			}
+			lock.unlock();
 		}
-		else if (status.get<std::string>() == "STOPPED")
-		{
-			++m_countStopped;
-		}
-		lock.unlock();
 	}
 }
 
@@ -320,27 +326,29 @@ void PortalServerControls::retrieveStatus(
 		serverResponse = retrieveInformationFromServer(
 			folder + '/' + service + "/status");
 	}
-
-	for (const auto& status : serverResponse["realTimeState"])
+	if (serverResponse.contains(ServerItem::realTimeState))
 	{
-		lock.lock();
-		++state.progressValue;
-		if (state.message != Messages::gathering)
+		for (const auto& status : serverResponse[ServerItem::realTimeState])
 		{
-			state.message = Messages::gathering;
-		}
+			lock.lock();
+			++state.progressValue;
+			if (state.message != Messages::gathering)
+			{
+				state.message = Messages::gathering;
+			}
 
-		m_serviceInformation[folder][service] = status;
+			m_serviceInformation[folder][service] = status;
 
-		if (status.get<std::string>() == "STARTED")
-		{
-			++m_countStarted;
+			if (status.get<std::string>() == "STARTED")
+			{
+				++m_countStarted;
+			}
+			else if (status.get<std::string>() == "STOPPED")
+			{
+				++m_countStopped;
+			}
+			lock.unlock();
 		}
-		else if (status.get<std::string>() == "STOPPED")
-		{
-			++m_countStopped;
-		}
-		lock.unlock();
 	}
 }
 
@@ -424,7 +432,6 @@ void PortalServerControls::sendSequentialServerCommands(
 				[](URLandServerResponse& element) -> bool
 				{ 
 					nlohmann::json response = element.serverResponse.get();
-					std::string test = response["status"];
 					return response["status"] == "success";
 				});
 

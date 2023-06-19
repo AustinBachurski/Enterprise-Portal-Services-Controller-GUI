@@ -77,9 +77,6 @@ namespace Messages
 
 	inline const wxString gathering{ "Gathering current server status." };
 
-	inline const nlohmann::json jsonError = nlohmann::json::parse(
-		R"({"status": "Error"})");
-		
 	inline const nlohmann::json jsonNothingToDo = nlohmann::json::parse(
 		R"({"status": "Services are already at requested state."})");
 
@@ -125,6 +122,7 @@ namespace ServerItem
 {
 	inline std::string_view folders{ "folders" };
 	inline std::string_view hosted{ "Hosted" };
+	inline std::string_view realTimeState{ "realTimeState" };
 	inline std::string_view root{ "Root" };
 	inline std::string_view services{ "services" };
 	inline std::string_view system{ "System" };
