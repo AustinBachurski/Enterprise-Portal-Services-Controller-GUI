@@ -190,9 +190,9 @@ nlohmann::json PortalServerControls::issueCommand(const std::string url)
 
 bool PortalServerControls::isValidFolder(const std::string& folder) const
 {
-	return folder != "Hosted"
-		&& folder != "System"
-		&& folder != "Utilities";
+	return folder != ServerItem::hosted
+		&& folder != ServerItem::system
+		&& folder != ServerItem::utilities;
 }
 
 void PortalServerControls::retrieveCount(const std::string& folder)

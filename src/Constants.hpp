@@ -124,8 +124,11 @@ namespace SearchMethod
 namespace ServerItem
 {
 	inline std::string_view folders{ "folders" };
+	inline std::string_view hosted{ "Hosted" };
 	inline std::string_view root{ "Root" };
 	inline std::string_view services{ "services" };
+	inline std::string_view system{ "System" };
+	inline std::string_view utilities{ "Utilities" };
 }
 
 
