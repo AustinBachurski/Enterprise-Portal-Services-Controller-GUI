@@ -11,9 +11,9 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 	  m_tokenUrl{ configuration.getPortal()
 			+ "portal/sharing/rest/generateToken" }
 {
-	if (m_configuration.credentialsAquired())
+	if (m_configuration.credentialsAcquired())
 	{
-		aquireToken();
+		acquireToken();
 		if (tokenIsValid())
 		{
 			setServiceCount();
@@ -31,7 +31,7 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 	}
 }
 
-void PortalServerControls::aquireToken()
+void PortalServerControls::acquireToken()
 {
 	cpr::Response response = cpr::Post(
 		cpr::Url{ m_tokenUrl },
@@ -216,9 +216,9 @@ nlohmann::json PortalServerControls::retrieveInformationFromServer(
 {
 	if (!tokenIsValid())
 	{
-		aquireToken();
+		acquireToken();
 	}
-
+	
 	cpr::Response response = cpr::Get(
 		cpr::Url{ m_portalServer + target },
 		cpr::Parameters

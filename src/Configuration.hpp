@@ -20,7 +20,7 @@ public:
 
 	Configuration();
 
-	bool credentialsAquired() const;
+	bool credentialsAcquired() const;
 	void enterCredentials();
 	int getCommandMethod() const;
 	std::string getUsername() const;
@@ -43,11 +43,11 @@ private:
 	const std::string m_encryptionKey;
 	const int m_invalidCharacterRange{ 32 };
 	std::string m_password;
-	bool m_passwordAquired{ false };
+	bool m_passwordAcquired{ false };
 	std::string m_portalUrl;
-	bool m_portalUrlAquired{ false };
+	bool m_portalUrlAcquired{ false };
 	std::string m_username;
-	bool m_usernameAquired{ false };
+	bool m_usernameAcquired{ false };
 	wxRect m_window{ 50, 50, 475, 500 };
 
 	void createDirectory();

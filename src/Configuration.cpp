@@ -30,9 +30,9 @@ void Configuration::createDirectory()
     }
 }
 
-bool Configuration::credentialsAquired() const
+bool Configuration::credentialsAcquired() const
 {
-    return m_passwordAquired && m_portalUrlAquired && m_usernameAquired;
+    return m_passwordAcquired && m_portalUrlAcquired && m_usernameAcquired;
 }
 
 char Configuration::decrypt(const char character)
@@ -107,7 +107,7 @@ void Configuration::parseData(std::string& data)
         m_portalUrl = data.substr(data.find('=') + 1);
         if (!m_portalUrl.empty())
         {
-            m_portalUrlAquired = true;
+            m_portalUrlAcquired = true;
         }
     }
     else if (data.find("username=") != std::string::npos)
@@ -115,7 +115,7 @@ void Configuration::parseData(std::string& data)
         m_username = data.substr(data.find('=') + 1);
         if (!m_username.empty())
         {
-            m_usernameAquired = true;
+            m_usernameAcquired = true;
         }
     }
     else if (data.find("password=") != std::string::npos)
@@ -123,7 +123,7 @@ void Configuration::parseData(std::string& data)
         m_password = data.substr(data.find('=') + 1);
         if (!m_password.empty())
         {
-            m_passwordAquired = true;
+            m_passwordAcquired = true;
         }
     }
     else if (data.find("windowWidth=") != std::string::npos)
@@ -198,8 +198,8 @@ void Configuration::updateConfigSettings(
         || windowSettings.y != m_window.y
         || commandMethod != m_commandMethod)
     {
-        // Open file for writing, discard existing data.
-        std::ofstream configFile(m_configFile, std::ios::out, std::ios::trunc);
+        // Open file for writing | discard existing data.
+        std::ofstream configFile(m_configFile, std::ios::out | std::ios::trunc);
         if (configFile.is_open())
         {
             configFile

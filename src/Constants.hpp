@@ -95,7 +95,7 @@ namespace Messages
 		R"({"status": "success"})");
 
 	inline const wxString tokenError{
-		"An error occurred while attempting to aquire a token.\n\n" };
+		"An error occurred while attempting to acquire a token.\n\n" };
 
 	inline const wxString waiting{
 		"Commands sent, awaiting server responses."

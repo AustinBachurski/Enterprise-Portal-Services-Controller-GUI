@@ -49,7 +49,7 @@ EnterCredentials::EnterCredentials(
 
             // Window closing would trigger the 'required' popup window
             // regardless of why it closed, m_okPressed prevents this.
-            if (!m_okPressed && !configuration.credentialsAquired())
+            if (!m_okPressed && !configuration.credentialsAcquired())
             {
                 wxMessageDialog* required = new wxMessageDialog(this,
                     "Tool will not function unless credentials are entered.",
