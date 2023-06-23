@@ -69,10 +69,10 @@ Tool was tested on an Enterprise Portal Server with an Intel Xeon Gold 5118 CPU,
 
 Function tests resulted in the following times:
 * Update status display - ```~1 second```
-* Start Services, Sequential Mode - ```1 minute, 21 seconds```
-* Stop Services, Sequential Mode - ```49 seconds```
-* Start Services, Batch Mode - ```2 minutes```
-* Stop Services, Batch Mode - ```1 minutes, 58 seconds```
+* Start Services, Sequential Mode - ```1 minute, 17 seconds```
+* Stop Services, Sequential Mode - ```38 seconds```
+* Start Services, Batch Mode - ```2 minutes, 6 seconds```
+* Stop Services, Batch Mode - ```1 minutes, 45 seconds```
 
 ## Image Gallery
 
