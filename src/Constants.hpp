@@ -37,7 +37,7 @@ struct threadState
 	bool working{};
 };
 
-namespace Commands
+namespace Command
 {
 	inline constexpr std::string_view START{ "STARTED" };
 	inline constexpr std::string_view STOP{ "STOPPED" };
@@ -54,7 +54,7 @@ namespace JSON
 	inline const std::string type{ "\",\"type\":\"" };
 }
 
-namespace Messages
+namespace Message
 {
 	inline const wxString credentialsRequired{
 		"Credentials must be valid for the tool to function correctly." };

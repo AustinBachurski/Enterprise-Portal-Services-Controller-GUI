@@ -21,7 +21,7 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 		}
 		else
 		{
-			m_statusTime = Messages::serverError;
+			m_statusTime = Message::serverError;
 		}
 	}
 	else
@@ -60,12 +60,12 @@ void PortalServerControls::acquireToken()
 		}
 		else if (result.contains("error"))
 		{
-			m_statusTime = Messages::serverError;
+			m_statusTime = Message::serverError;
 
 			std::string details = result["error"]["details"][0];
 
 			wxMessageDialog* tokenError = new wxMessageDialog(NULL,
-				Messages::tokenError + details,
+				Message::tokenError + details,
 				"Token Error",
 				wxOK | wxICON_ERROR);
 			tokenError->ShowModal();
@@ -73,10 +73,10 @@ void PortalServerControls::acquireToken()
 	}
 	else
 	{
-		m_statusTime = Messages::serverError;
+		m_statusTime = Message::serverError;
 
 		wxMessageDialog* tokenError = new wxMessageDialog(NULL,
-			Messages::noResponse 
+			Message::noResponse 
 			+ "URL: " + m_configuration.getPortal(),
 			"No Response from Server",
 			wxOK | wxICON_ERROR);
@@ -104,7 +104,7 @@ std::vector<std::string> PortalServerControls::generateTargets(
 					m_portalServer
 					+ (folder == ServerItem::root ? "" : folder + '/')
 					+ service
-					+ (command == Commands::START ? "/start" : "/stop")
+					+ (command == Command::START ? "/start" : "/stop")
 				);
 			}
 		}
@@ -332,9 +332,9 @@ void PortalServerControls::retrieveStatus(
 		{
 			lock.lock();
 			++state.progressValue;
-			if (state.message != Messages::gathering)
+			if (state.message != Message::gathering)
 			{
-				state.message = Messages::gathering;
+				state.message = Message::gathering;
 			}
 
 			m_serviceInformation[folder][service] = status;
@@ -364,7 +364,7 @@ void PortalServerControls::sendBatchServerCommand(
 	if (services.find("type") != std::string::npos)
 	{
 		cpr::Response response = cpr::Post(
-			cpr::Url{ command == Commands::START ? m_startAllUrl : m_stopAllUrl },
+			cpr::Url{ command == Command::START ? m_startAllUrl : m_stopAllUrl },
 			cpr::Payload
 			{
 				{ "services", services},
@@ -379,7 +379,7 @@ void PortalServerControls::sendBatchServerCommand(
 	}
 	else
 	{
-		promise.set_value(Messages::jsonNothingToDo);
+		promise.set_value(Message::jsonNothingToDo);
 	}
 }
 
@@ -388,31 +388,31 @@ void PortalServerControls::sendSequentialServerCommands(
 	const std::string_view command,
 	threadState& state)
 {
-	std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 	const int seventyFivePercentProgress{ m_countTotal * 3 };
+
 	updateStatus(state);
 	state.message = "Generating commands and sending to server.";
-	const std::vector<std::string> targetServices = generateTargets(command);
+	const std::vector<std::string> targetServices{ generateTargets(command) };
 
 	std::vector<URLandServerResponse> results;
 	std::vector<std::string> buffer;
 
 	if (!targetServices.empty())
 	{
+		// Send initial commands to server.
 		std::for_each(
 			std::execution::par, targetServices.begin(), targetServices.end(),
 			[&](const std::string& targetUrl)
 			{
-				lock.lock();
+				std::lock_guard<std::mutex> guard(m_mutex);
 				++state.progressValue;
 
 				results.emplace_back(URLandServerResponse(targetUrl,
 					std::async(std::launch::async, 
-						[this, &targetUrl]()->nlohmann::json
+						[this, &targetUrl]() -> nlohmann::json
 						{
 							return issueCommand(targetUrl);
 						})));
-				lock.unlock();
 			});
 
 		while (!results.empty())
@@ -420,7 +420,7 @@ void PortalServerControls::sendSequentialServerCommands(
 			for (const auto& urlAndServerResponse : results)
 			{
 				urlAndServerResponse.serverResponse.wait();
-				state.message = Messages::waiting;
+				state.message = Message::waiting;
 
 				if (state.progressValue < seventyFivePercentProgress)
 				{
@@ -428,6 +428,7 @@ void PortalServerControls::sendSequentialServerCommands(
 				}
 			}
 			
+			// Remove sucessful services from results.
 			std::erase_if(results,
 				[](URLandServerResponse& element) -> bool
 				{ 
@@ -435,8 +436,12 @@ void PortalServerControls::sendSequentialServerCommands(
 					return response["status"] == "success";
 				});
 
+			// With successful responses removed, all that remains are services
+			// which are not at the requested state, send commands again.
 			if (!results.empty())
 			{
+				buffer.clear();
+
 				for (const auto& urlAndServerResponse : results)
 				{
 					// Using the buffer vector to avoid modifying
@@ -444,11 +449,12 @@ void PortalServerControls::sendSequentialServerCommands(
 					buffer.push_back(urlAndServerResponse.url);
 				}
 
+				// Resend commands for uncooperative services.
 				std::for_each(
 					std::execution::par, buffer.begin(), buffer.end(),
 					[&](const std::string& targetUrl)
 					{
-						lock.lock();
+						std::lock_guard<std::mutex> guard(m_mutex);
 						++state.progressValue;
 
 						results.emplace_back(URLandServerResponse(targetUrl,
@@ -457,9 +463,9 @@ void PortalServerControls::sendSequentialServerCommands(
 								{
 									return issueCommand(targetUrl);
 								})));
-						lock.unlock();
 					});
 
+				// Remove previosly read responses.
 				std::erase_if(results,
 					[](URLandServerResponse& element) -> bool
 					{
@@ -469,12 +475,11 @@ void PortalServerControls::sendSequentialServerCommands(
 		}
 		state.progressValue = seventyFivePercentProgress;
 		updateStatus(state);
-
-		promise.set_value(Messages::success);
+		promise.set_value(Message::success);
 		state.working = false;
 		return;
 	}
-	promise.set_value(Messages::jsonNothingToDo);
+	promise.set_value(Message::jsonNothingToDo);
 	state.working = false;
 }
 

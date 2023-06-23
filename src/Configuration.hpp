@@ -37,7 +37,7 @@ public:
 		const std::string password);
 
 private:
-	int m_commandMethod{ Commands::sequentialMode };
+	int m_commandMethod{ Command::sequentialMode };
 	const std::string m_configDirectory{ "./config" };
 	const std::string m_configFile{ "./config/config.ini" };
 	const std::string m_encryptionKey;

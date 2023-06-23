@@ -15,7 +15,7 @@ void Configuration::createDirectory()
     catch (std::filesystem::filesystem_error)
     {
         wxMessageDialog* directoryError = new wxMessageDialog(NULL,
-            Messages::directoryError,
+            Message::directoryError,
             "Directory Error", wxOK | wxICON_ERROR);
         directoryError->ShowModal();
     }
@@ -24,7 +24,7 @@ void Configuration::createDirectory()
     if (!std::filesystem::exists(m_configDirectory))
     {
         wxMessageDialog* directoryError = new wxMessageDialog(NULL,
-            Messages::directoryError,
+            Message::directoryError,
             "Directory Error", wxOK | wxICON_ERROR);
         directoryError->ShowModal();
     }
@@ -251,7 +251,7 @@ void Configuration::writeConfig(
     else
     {
         wxMessageDialog* fileError = new wxMessageDialog(NULL,
-            Messages::fileError,
+            Message::fileError,
             "Config File Error", wxOK | wxICON_ERROR);
         fileError->ShowModal();
         return;

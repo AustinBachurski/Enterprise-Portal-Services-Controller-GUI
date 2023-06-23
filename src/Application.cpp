@@ -52,7 +52,7 @@ Application::Application(const std::string title)
 			m_menuModeBatch->SetBitmaps(wxArtProvider::GetBitmap(
 				wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
 
-			if (m_serverCommandMethod == Commands::sequentialMode)
+			if (m_serverCommandMethod == Command::sequentialMode)
 			{
 				m_menuModeSequential->Check(true);
 				m_menuModeBatch->Check(false);
@@ -252,16 +252,16 @@ void Application::areYouSure(const std::string_view command)
 {
 	wxMessageDialog* youSure = new wxMessageDialog(
 		this,
-		(command == Commands::START
+		(command == Command::START
 				? "START all services on the server?"
 				: "STOP all services on the server?")
-		+ Messages::durationWarning,
+		+ Message::durationWarning,
 		"Are You Sure?",
 		wxYES_NO);
 
 	if (youSure->ShowModal() == wxID_YES)
 	{
-		if (m_serverCommandMethod == Commands::sequentialMode)
+		if (m_serverCommandMethod == Command::sequentialMode)
 		{
 			sendSequentialCommand(command);
 		}
@@ -569,7 +569,7 @@ void Application::exportJson(MenuID mode)
 	refreshStatus();
 
 	std::string jsonString{ m_portalServerControl->generateJson(
-		mode == MenuID::exportStart ? Commands::START : Commands::STOP) };
+		mode == MenuID::exportStart ? Command::START : Command::STOP) };
 
 	auto isUsable = [](const std::string& jsonString) -> bool
 	{ return jsonString.find("type") != std::string::npos; };
@@ -628,7 +628,7 @@ void Application::keyboardShortcuts(wxKeyEvent& event)
 	else
 	{
 		wxMessageDialog* noCred = new wxMessageDialog(this,
-			Messages::credentialsRequired,
+			Message::credentialsRequired,
 			"Credentials Required", wxOK | wxICON_INFORMATION);
 		noCred->ShowModal();
 	}
@@ -663,7 +663,7 @@ void Application::menuAction(wxCommandEvent& event)
 
 		case MenuID::setMethodSequential:
 		{
-			m_serverCommandMethod = Commands::sequentialMode;
+			m_serverCommandMethod = Command::sequentialMode;
 			m_menuModeSequential->Check(true);
 			m_menuModeBatch->Check(false);
 
@@ -675,7 +675,7 @@ void Application::menuAction(wxCommandEvent& event)
 		}
 		case MenuID::setMethodBatch:
 		{
-			m_serverCommandMethod = Commands::batchMode;
+			m_serverCommandMethod = Command::batchMode;
 			m_menuModeBatch->Check(true);
 			m_menuModeSequential->Check(false);
 
@@ -734,10 +734,10 @@ void Application::menuAction(wxCommandEvent& event)
 			break;
 
 		case MenuID::start:
-			areYouSure(Commands::START);
+			areYouSure(Command::START);
 			break;
 		case MenuID::stop:
-			areYouSure(Commands::STOP);
+			areYouSure(Command::STOP);
 			break;
 		case MenuID::about:
 			showAboutWindow();
@@ -771,7 +771,7 @@ void Application::menuAction(wxCommandEvent& event)
 			break;
 		default:
 			wxMessageDialog* noCred = new wxMessageDialog(this,
-				Messages::credentialsRequired,
+				Message::credentialsRequired,
 				"Credentials Required", wxOK | wxICON_INFORMATION);
 			noCred->ShowModal();
 			break;
@@ -783,7 +783,7 @@ void Application::refreshStatus()
 {
 	threadState state(0,
 		m_portalServerControl->getCountTotal(),
-		Messages::gathering,
+		Message::gathering,
 		true);
 
 	wxGenericProgressDialog progress(
@@ -822,10 +822,10 @@ void Application::sendBatchCommand(const std::string_view command)
 	sendServerCommand.detach();
 
 	wxGenericProgressDialog progress(
-		command == Commands::START
+		command == Command::START
 		? "Sending 'Start All' command to server."
 		: "Sending 'Stop All' command to server.",
-		Messages::waitCommand,
+		Message::waitCommand,
 		10,
 		this,
 		wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME);
@@ -858,11 +858,11 @@ void Application::sendSequentialCommand(const std::string_view command)
 	constexpr int numberOfStepsToComplete{ 4 };
 	threadState state(0,
 		m_portalServerControl->getCountTotal() * numberOfStepsToComplete,
-		Messages::gathering,
+		Message::gathering,
 		true);
 
 	wxGenericProgressDialog progress(
-		command == Commands::START
+		command == Command::START
 		? "Sending 'Start All' command to server."
 		: "Sending 'Stop All' command to server.",
 		"Server command mode:\nSequential",

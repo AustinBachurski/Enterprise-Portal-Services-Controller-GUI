@@ -72,7 +72,7 @@ private:
 	const std::string m_portalServer;
 	const std::string m_referer;
 	const std::string m_startAllUrl;
-	std::string m_statusTime{ Messages::initialStatus };
+	std::string m_statusTime{ Message::initialStatus };
 	const std::string m_stopAllUrl;
 	std::string m_token;
 	const std::string m_tokenUrl;
