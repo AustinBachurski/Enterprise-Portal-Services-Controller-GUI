@@ -19,15 +19,6 @@ void Configuration::createDirectory()
             "Directory Error", wxOK | wxICON_ERROR);
         directoryError->ShowModal();
     }
-
-    // Verify the directory was successfully created.
-    if (!std::filesystem::exists(m_configDirectory))
-    {
-        wxMessageDialog* directoryError = new wxMessageDialog(NULL,
-            Message::directoryError,
-            "Directory Error", wxOK | wxICON_ERROR);
-        directoryError->ShowModal();
-    }
 }
 
 bool Configuration::credentialsAcquired() const
