@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 set(CMAKE_CXX_STANDARD 20)
 project("PortalServicesController")
 
-find_package(wxWidgets 3 REQUIRED richtext aui adv html core xml net base)
+find_package(wxWidgets REQUIRED COMPONENTS richtext aui adv html core xml net base)
 
 include(${wxWidgets_USE_FILE})
 
@@ -24,6 +24,8 @@ FetchContent_Declare(cpr GIT_REPOSITORY https://github.com/libcpr/cpr.git
 			 # Replace with the latest from: https://github.com/libcpr/cpr/releases 
 FetchContent_MakeAvailable(cpr)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr ${wxWidgets_LIBRARIES} ${wxWidgets_RICHTEXT_LIBRARIES} tbb -pthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr ${wxWidgets_LIBRARIES} ${wxWidgets_RICHTEXT_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${wxWidgets_INCLUDE_DIRS})
 
+set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE YES)
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
