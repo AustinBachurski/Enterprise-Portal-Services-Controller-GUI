@@ -9,7 +9,7 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 	  m_stopAllUrl{ configuration.getPortal()
 			+ "server/admin/services/stopServices" },
 	  m_tokenUrl{ configuration.getPortal()
-			+ "sharing/rest/generateToken" }
+			+ "portal/sharing/rest/generateToken" }
 {
 	if (m_configuration.credentialsAcquired())
 	{
