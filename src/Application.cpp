@@ -12,9 +12,9 @@ bool Launcher::OnInit()
 Application::Application(const std::string title)
 	: wxFrame(nullptr, wxID_ANY, title, wxPoint(wxDefaultPosition),
 		wxSize(wxDefaultSize), wxDEFAULT_FRAME_STYLE),
-	  m_portalServerControl{
-		  std::make_unique<PortalServerControls>(m_configuration) },
-	  m_serverCommandMethod{ m_configuration.getCommandMethod() }
+	m_portalServerControl{
+		std::make_unique<PortalServerControls>(m_configuration) },
+		m_serverCommandMethod{ m_configuration.getCommandMethod() }
 {
 	SetSize(wxRect(m_configuration.getWindowSettings()));
 
@@ -26,151 +26,151 @@ Application::Application(const std::string title)
 	wxMenuBar* menuBar = new wxMenuBar();
 
 	wxMenu* fileMenu = new wxMenu();
-		
-		wxMenuItem* credentials = fileMenu->Append(
-			MenuID::changeCredentials,
-			"Change Enterprise Portal Credentials");
-		credentials->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_INFORMATION, wxART_MENU));
 
-		wxMenu* changeMethodSubmenu = new wxMenu();
-		wxMenuItem* changeMethod = fileMenu->AppendSubMenu(
-			changeMethodSubmenu, "Change Server Command Method");
-		changeMethod->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_WARNING, wxART_MENU));
-		changeMethod->SetSubMenu(changeMethodSubmenu);
+	wxMenuItem* credentials = fileMenu->Append(
+		MenuID::changeCredentials,
+		"Change Enterprise Portal Credentials");
+	credentials->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_INFORMATION, wxART_MENU));
 
-			m_menuModeSequential = changeMethodSubmenu->Append(
-				MenuID::setMethodSequential,
-				"Sequential Commands", "", wxITEM_CHECK);
-			m_menuModeSequential->SetBitmaps(wxArtProvider::GetBitmap(
-				wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
+	wxMenu* changeMethodSubmenu = new wxMenu();
+	wxMenuItem* changeMethod = fileMenu->AppendSubMenu(
+		changeMethodSubmenu, "Change Server Command Method");
+	changeMethod->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_WARNING, wxART_MENU));
+	changeMethod->SetSubMenu(changeMethodSubmenu);
 
-			m_menuModeBatch = changeMethodSubmenu->Append(
-				MenuID::setMethodBatch,
-				"Single Batch Command", "", wxITEM_CHECK);
-			m_menuModeBatch->SetBitmaps(wxArtProvider::GetBitmap(
-				wxART_TICK_MARK, wxART_MENU), wxNullBitmap);
+	m_menuModeSequential = changeMethodSubmenu->Append(
+		MenuID::setMethodSequential,
+		"Sequential Commands", "", wxITEM_CHECK);
+	m_menuModeSequential->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_TICK_MARK, wxART_MENU));
 
-			if (m_serverCommandMethod == Command::sequentialMode)
-			{
-				m_menuModeSequential->Check(true);
-				m_menuModeBatch->Check(false);
-			}
-			else
-			{
-				m_menuModeSequential->Check(false);
-				m_menuModeBatch->Check(true);
-			}
+	m_menuModeBatch = changeMethodSubmenu->Append(
+		MenuID::setMethodBatch,
+		"Single Batch Command", "", wxITEM_CHECK);
+	m_menuModeBatch->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_TICK_MARK, wxART_MENU));
 
-		fileMenu->AppendSeparator();
+	if (m_serverCommandMethod == Command::sequentialMode)
+	{
+		m_menuModeSequential->Check(true);
+		m_menuModeBatch->Check(false);
+	}
+	else
+	{
+		m_menuModeSequential->Check(false);
+		m_menuModeBatch->Check(true);
+	}
 
-		wxMenuItem* update = fileMenu->Append(
-			MenuID::updateFolders,
-			"Refresh Folder and Service Information");
-		update->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_REFRESH, wxART_MENU));
+	fileMenu->AppendSeparator();
 
-		fileMenu->AppendSeparator();
+	wxMenuItem* update = fileMenu->Append(
+		MenuID::updateFolders,
+		"Refresh Folder and Service Information");
+	update->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_REFRESH, wxART_MENU));
 
-		wxMenuItem* quit = fileMenu->Append(
-			MenuID::quit,
-			"Quit");
-		quit->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_QUIT, wxART_MENU));
+	fileMenu->AppendSeparator();
+
+	wxMenuItem* quit = fileMenu->Append(
+		MenuID::quit,
+		"Quit");
+	quit->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_QUIT, wxART_MENU));
 
 	wxMenu* statusMenu = new wxMenu();
 
-		wxMenuItem* find = statusMenu->Append(
-			MenuID::find,
-			"Find");
-		find->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_FIND, wxART_MENU));
+	wxMenuItem* find = statusMenu->Append(
+		MenuID::find,
+		"Find");
+	find->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_FIND, wxART_MENU));
 
-		wxMenuItem* copySelection = statusMenu->Append(
-			MenuID::copySelection,
-			"Copy Selection");
-		copySelection->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_COPY, wxART_MENU));
+	wxMenuItem* copySelection = statusMenu->Append(
+		MenuID::copySelection,
+		"Copy Selection");
+	copySelection->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_COPY, wxART_MENU));
 
-		wxMenuItem* copyAll = statusMenu->Append(
-			MenuID::copyAll,
-			"Copy Server Status");
-		copyAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_COPY, wxART_MENU));
+	wxMenuItem* copyAll = statusMenu->Append(
+		MenuID::copyAll,
+		"Copy Server Status");
+	copyAll->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_COPY, wxART_MENU));
 
-		statusMenu->AppendSeparator();
+	statusMenu->AppendSeparator();
 
-		wxMenuItem* refreshStatus = statusMenu->Append(
-			MenuID::refresh,
-			"Refresh Server Status");
-		refreshStatus->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_REFRESH, wxART_MENU));
+	wxMenuItem* refreshStatus = statusMenu->Append(
+		MenuID::refresh,
+		"Refresh Server Status");
+	refreshStatus->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_REFRESH, wxART_MENU));
 
-		statusMenu->AppendSeparator();
+	statusMenu->AppendSeparator();
 
-		wxMenuItem* showAll = statusMenu->Append(
-			MenuID::showAll,
-			"Show All Services");
-		showAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_REPORT_VIEW, wxART_MENU));
+	wxMenuItem* showAll = statusMenu->Append(
+		MenuID::showAll,
+		"Show All Services");
+	showAll->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_REPORT_VIEW, wxART_MENU));
 
-		wxMenuItem* showStarted = statusMenu->Append(
-			MenuID::showStarted,
-			"Show Only Started Services");
-		showStarted->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_GO_FORWARD, wxART_MENU));
+	wxMenuItem* showStarted = statusMenu->Append(
+		MenuID::showStarted,
+		"Show Only Started Services");
+	showStarted->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_GO_FORWARD, wxART_MENU));
 
-		wxMenuItem* showStopped = statusMenu->Append(
-			MenuID::showStopped,
-			"Show Only Stopped Services");
-		showStopped->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_STOP, wxART_MENU));
+	wxMenuItem* showStopped = statusMenu->Append(
+		MenuID::showStopped,
+		"Show Only Stopped Services");
+	showStopped->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_STOP, wxART_MENU));
 
 	wxMenu* controlsMenu = new wxMenu();
 
-		wxMenu* exportJsonSubMenu = new wxMenu();
-		wxMenuItem* exportJson = controlsMenu->AppendSubMenu(
-			exportJsonSubMenu, "Export Batch Command as JSON");
-		exportJson->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_GO_DIR_UP, wxART_MENU));
-		exportJson->SetSubMenu(exportJsonSubMenu);
+	wxMenu* exportJsonSubMenu = new wxMenu();
+	wxMenuItem* exportJson = controlsMenu->AppendSubMenu(
+		exportJsonSubMenu, "Export Batch Command as JSON");
+	exportJson->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_GO_DIR_UP, wxART_MENU));
+	exportJson->SetSubMenu(exportJsonSubMenu);
 
-		controlsMenu->AppendSeparator();
+	controlsMenu->AppendSeparator();
 
-			wxMenuItem* exportStart = exportJsonSubMenu->Append(
-				MenuID::exportStart,
-				"Export Start All Command");
-			exportStart->SetBitmap(wxArtProvider::GetBitmap(
-				wxART_GO_FORWARD, wxART_MENU));
+	wxMenuItem* exportStart = exportJsonSubMenu->Append(
+		MenuID::exportStart,
+		"Export Start All Command");
+	exportStart->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_GO_FORWARD, wxART_MENU));
 
-			wxMenuItem* exportStop = exportJsonSubMenu->Append(
-				MenuID::exportStop,
-				"Export Stop All Command");
-			exportStop->SetBitmap(wxArtProvider::GetBitmap(
-				wxART_STOP, wxART_MENU));
+	wxMenuItem* exportStop = exportJsonSubMenu->Append(
+		MenuID::exportStop,
+		"Export Stop All Command");
+	exportStop->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_STOP, wxART_MENU));
 
-		wxMenuItem* startAll = controlsMenu->Append(
-			MenuID::start,
-			"Start All Map Services");
-		startAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_GO_FORWARD, wxART_MENU));
+	wxMenuItem* startAll = controlsMenu->Append(
+		MenuID::start,
+		"Start All Map Services");
+	startAll->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_GO_FORWARD, wxART_MENU));
 
-		controlsMenu->AppendSeparator();
+	controlsMenu->AppendSeparator();
 
-		wxMenuItem* stopAll = controlsMenu->Append(
-			MenuID::stop,
-			"Stop All Map Services");
-		stopAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_STOP, wxART_MENU));
+	wxMenuItem* stopAll = controlsMenu->Append(
+		MenuID::stop,
+		"Stop All Map Services");
+	stopAll->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_STOP, wxART_MENU));
 
 	wxMenu* helpMenu = new wxMenu();
-		
-		wxMenuItem* about = helpMenu->Append(
-			MenuID::about,
-			"About");
-		about->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_QUESTION, wxART_MENU));
+
+	wxMenuItem* about = helpMenu->Append(
+		MenuID::about,
+		"About");
+	about->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_QUESTION, wxART_MENU));
 
 
 	menuBar->Append(fileMenu, "File");
@@ -191,51 +191,51 @@ Application::Application(const std::string title)
 
 	wxMenu* contextStatusMenu = new wxMenu();
 
-		auto contextfind = contextStatusMenu->Append(
-			MenuID::find,
-			"Find");
-		contextfind->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_FIND, wxART_MENU));
+	auto contextfind = contextStatusMenu->Append(
+		MenuID::find,
+		"Find");
+	contextfind->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_FIND, wxART_MENU));
 
-		auto contextcopySelection = contextStatusMenu->Append(
-			MenuID::copySelection,
-			"Copy Selection");
-		contextcopySelection->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_COPY, wxART_MENU));
+	auto contextcopySelection = contextStatusMenu->Append(
+		MenuID::copySelection,
+		"Copy Selection");
+	contextcopySelection->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_COPY, wxART_MENU));
 
-		auto contextcopyAll = contextStatusMenu->Append(
-			MenuID::copyAll,
-			"Copy Complete Server Status");
-		contextcopyAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_COPY, wxART_MENU));
+	auto contextcopyAll = contextStatusMenu->Append(
+		MenuID::copyAll,
+		"Copy Complete Server Status");
+	contextcopyAll->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_COPY, wxART_MENU));
 
-		contextStatusMenu->AppendSeparator();
+	contextStatusMenu->AppendSeparator();
 
-		auto contextRefresh = contextStatusMenu->Append(
-			MenuID::refresh,
-			"Refresh Server Status");
-		contextRefresh->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_REFRESH, wxART_MENU));
+	auto contextRefresh = contextStatusMenu->Append(
+		MenuID::refresh,
+		"Refresh Server Status");
+	contextRefresh->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_REFRESH, wxART_MENU));
 
-		contextStatusMenu->AppendSeparator();
+	contextStatusMenu->AppendSeparator();
 
-		auto contextShowAll = contextStatusMenu->Append(
-			MenuID::showAll,
-			"Show All Services");
-		contextShowAll->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_REPORT_VIEW, wxART_MENU));
+	auto contextShowAll = contextStatusMenu->Append(
+		MenuID::showAll,
+		"Show All Services");
+	contextShowAll->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_REPORT_VIEW, wxART_MENU));
 
-		auto contextShowStarted = contextStatusMenu->Append(
-			MenuID::showStarted,
-			"Show Only Started Services");
-		contextShowStarted->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_GO_FORWARD, wxART_MENU));
+	auto contextShowStarted = contextStatusMenu->Append(
+		MenuID::showStarted,
+		"Show Only Started Services");
+	contextShowStarted->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_GO_FORWARD, wxART_MENU));
 
-		auto contextShowStopped = contextStatusMenu->Append(
-			MenuID::showStopped,
-			"Show Only Stopped Services");
-		contextShowStopped->SetBitmap(wxArtProvider::GetBitmap(
-			wxART_STOP, wxART_MENU));
+	auto contextShowStopped = contextStatusMenu->Append(
+		MenuID::showStopped,
+		"Show Only Stopped Services");
+	contextShowStopped->SetBitmap(wxArtProvider::GetBitmap(
+		wxART_STOP, wxART_MENU));
 
 	m_statusText->SetContextMenu(contextStatusMenu);
 	contextStatusMenu->Bind(wxEVT_MENU, &Application::menuAction, this);
@@ -245,7 +245,7 @@ Application::~Application()
 {
 	wxRect windowSettings = GetRect();
 	m_configuration.updateConfigSettings(
-		windowSettings,m_serverCommandMethod);
+		windowSettings, m_serverCommandMethod);
 }
 
 void Application::areYouSure(const std::string_view command)
@@ -253,8 +253,8 @@ void Application::areYouSure(const std::string_view command)
 	wxMessageDialog* youSure = new wxMessageDialog(
 		this,
 		(command == Command::START
-				? "START all services on the server?"
-				: "STOP all services on the server?")
+			? "START all services on the server?"
+			: "STOP all services on the server?")
 		+ Message::durationWarning,
 		"Are You Sure?",
 		wxYES_NO);
@@ -512,9 +512,9 @@ std::string Application::elapsedTimeMessage(
 
 	std::string message{
 		"Completed in "
-		+ (minutes ? std::to_string(minutes) + " minutes, " : "")
-		+ std::to_string(seconds) + " seconds.\n\n"
-		+ "Server Response : " + response};
+			+ (minutes ? std::to_string(minutes) + " minutes, " : "")
+			+ std::to_string(seconds) + " seconds.\n\n"
+			+ "Server Response : " + response};
 
 	return message;
 }
@@ -559,7 +559,7 @@ void Application::displayWelcomeMessage()
 
 void Application::enterCredentials()
 {
-	EnterCredentials* credentialsWindow = 
+	EnterCredentials* credentialsWindow =
 		new EnterCredentials(this, m_configuration);
 	credentialsWindow->ShowModal();
 }
@@ -797,7 +797,7 @@ void Application::refreshStatus()
 	std::thread update([this, &state]()
 		{ m_portalServerControl->updateStatus(state); });
 	update.detach();
-	
+
 	while (state.working)
 	{
 		progress.Update(state.progressValue, state.message);
