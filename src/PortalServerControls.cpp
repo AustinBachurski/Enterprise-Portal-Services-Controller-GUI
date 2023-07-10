@@ -33,7 +33,7 @@ PortalServerControls::PortalServerControls(Configuration& configuration)
 
 void PortalServerControls::acquireToken()
 {
-	cpr::Response response = cpr::Post(
+	cpr::Response response{ cpr::Post(
 		cpr::Url{ m_tokenUrl },
 		cpr::Payload
 		{
@@ -43,11 +43,11 @@ void PortalServerControls::acquireToken()
 			{ "referer", m_referer },
 			{ "expiration", "1 hour" },
 			{ "f", "json" }
-		});
+		}) };
 
-	if (!response.text.empty())
+	if (response.status_code == 200)
 	{
-		nlohmann::json result = nlohmann::json::parse(response.text);
+		nlohmann::json result{ nlohmann::json::parse(response.text) };
 
 		if (result.contains("token"))
 		{
@@ -62,12 +62,12 @@ void PortalServerControls::acquireToken()
 		{
 			m_statusTime = Message::serverError;
 
-			std::string details = result["error"]["details"][0];
+			std::string details{ result["error"]["details"][0] };
 
-			wxMessageDialog* tokenError = new wxMessageDialog(NULL,
+			wxMessageDialog* tokenError{ new wxMessageDialog(NULL,
 				Message::tokenError + details,
 				"Token Error",
-				wxOK | wxICON_ERROR);
+				wxOK | wxICON_ERROR) };
 			tokenError->ShowModal();
 		}
 	}
@@ -75,11 +75,13 @@ void PortalServerControls::acquireToken()
 	{
 		m_statusTime = Message::serverError;
 
-		wxMessageDialog* tokenError = new wxMessageDialog(NULL,
-			Message::noResponse 
+		wxMessageDialog* tokenError{ new wxMessageDialog(NULL,
+			Message::noResponse
 			+ "URL: " + m_configuration.getPortal(),
-			"No Response from Server",
-			wxOK | wxICON_ERROR);
+			"Unexpected response from server, return code: "
+			+ std::to_string(response.status_code)
+			+ "\nIf your server is online, double check your login credentials.",
+			wxOK | wxICON_ERROR) };
 		tokenError->ShowModal();
 	}
 }
@@ -175,15 +177,14 @@ bool PortalServerControls::isStatusValid() const
 
 nlohmann::json PortalServerControls::issueCommand(const std::string url)
 {
-	cpr::Response response = cpr::Post(
+	cpr::Response response{ cpr::Post(
 		cpr::Url{ url },
 		cpr::Payload
 		{
 			{ "token", m_token },
 			{ "f", "json" }
-		});
-
-	nlohmann::json result = nlohmann::json::parse(response.text);
+		}) };
+	nlohmann::json result{ nlohmann::json::parse(response.text) };
 
 	return result;
 }
@@ -200,7 +201,7 @@ void PortalServerControls::retrieveCount(const std::string& folder)
 	if (folder != ServerItem::root)
 	{
 		std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
-		nlohmann::json serverResponse = retrieveInformationFromServer(folder);
+		nlohmann::json serverResponse{ retrieveInformationFromServer(folder) };
 
 		if (serverResponse.contains(ServerItem::services))
 		{
@@ -222,17 +223,16 @@ nlohmann::json PortalServerControls::retrieveInformationFromServer(
 		acquireToken();
 	}
 	
-	cpr::Response response = cpr::Get(
+	cpr::Response response{ cpr::Get(
 		cpr::Url{ m_portalServer + target },
 		cpr::Parameters
 		{
 			{ "token", m_token },
 			{ "f", "json" }
-		});
-
-	if (!response.text.empty())
+		})};
+	if (response.status_code == 200)
 	{
-		nlohmann::json result = nlohmann::json::parse(response.text);
+		nlohmann::json result{ nlohmann::json::parse(response.text) };
 
 		return result;
 	}
@@ -357,22 +357,21 @@ void PortalServerControls::sendBatchServerCommand(
 	const std::string_view command)
 {
 	updateStatus();
-	const std::string services = generateJson(command);
+	const std::string services{ generateJson(command) };
 
 	// If "type" is not in services, no commands were appended to the JSON
 	// string because services were already at requested state.
 	if (services.find("type") != std::string::npos)
 	{
-		cpr::Response response = cpr::Post(
+		cpr::Response response{ cpr::Post(
 			cpr::Url{ command == Command::START ? m_startAllUrl : m_stopAllUrl },
 			cpr::Payload
 			{
 				{ "services", services},
 				{ "token", m_token },
 				{ "f", "json" }
-			});
-
-		nlohmann::json result = nlohmann::json::parse(response.text);
+			}) };
+		nlohmann::json result{ nlohmann::json::parse(response.text) };
 		updateStatus();
 
 		promise.set_value(result);
@@ -432,7 +431,7 @@ void PortalServerControls::sendSequentialServerCommands(
 			std::erase_if(results,
 				[](URLandServerResponse& element) -> bool
 				{ 
-					nlohmann::json response = element.serverResponse.get();
+					nlohmann::json response{ element.serverResponse.get() };
 					return response["status"] == "success";
 				});
 
@@ -488,7 +487,7 @@ void PortalServerControls::setServiceCount()
 	m_countTotal = 0;
 	m_serviceInformation[ std::string(ServerItem::root) ];
 	std::vector<std::future<void>> futures;
-	nlohmann::json serverResponse = retrieveInformationFromServer();
+	nlohmann::json serverResponse{ retrieveInformationFromServer() };
 
 	if (serverResponse.contains(ServerItem::folders)
 		&& serverResponse.contains(ServerItem::services))
@@ -530,7 +529,7 @@ void PortalServerControls::timeStamp()
 		std::chrono::system_clock::now() };
 
 	// Format time as Hours:Minutes:AM/PM - 12 hour.
-	std::string time = std::format("{:%I:%M %p}", now);
+	std::string time{ std::format("{:%I:%M %p}", now) };
 
 	if (time.front() == '0')
 	{

@@ -4,46 +4,46 @@ AboutWindow::AboutWindow(wxWindow* parent)
 	: wxFrame(parent, wxID_ANY, "About", wxDefaultPosition, wxSize(600, 400))
 {
 	CenterOnParent();
-	wxPanel* panel = new wxPanel(this);
-	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
+	wxPanel* panel{ new wxPanel(this) };
+	wxBoxSizer* sizer{ new wxBoxSizer(wxVERTICAL) };
 
-	wxStaticText* name = new wxStaticText(panel, wxID_ANY,
-		"Enterprise Portal Services Controller");
-	wxFont nameFont = name->GetFont();
+	wxStaticText* name{ new wxStaticText(panel, wxID_ANY,
+		"Enterprise Portal Services Controller") };
+	wxFont nameFont{ name->GetFont() };
 	nameFont.SetPointSize(20);
 	name->SetFont(nameFont);
 
-	wxStaticText* version = new wxStaticText(panel, wxID_ANY,
-		"Version: *Place Holder* - Built June 12, 2023"); //TODO - Set Version & Build Date
-	wxStaticText* author = new wxStaticText(panel, wxID_ANY,
-		"Author: Austin Bachurski");
+	wxStaticText* version{ new wxStaticText(panel, wxID_ANY,
+		"Version: *Place Holder* - Built June 12, 2023") }; //TODO - Set Version & Build Date
+	wxStaticText* author{ new wxStaticText(panel, wxID_ANY,
+		"Author: Austin Bachurski") };
 
-	wxHyperlinkCtrl * git = new wxHyperlinkCtrl(panel, wxID_ANY, 
+	wxHyperlinkCtrl* git{ new wxHyperlinkCtrl(panel, wxID_ANY,
 		"Project GitHub",
-		"https://github.com/AustinBachurski/Enterprise-Portal-Services-Controller-GUI/tree/main");
+		"https://github.com/AustinBachurski/Enterprise-Portal-Services-Controller-GUI/tree/main") };
 
-	wxStaticText* openSource = new wxStaticText(panel, wxID_ANY,
-		"Powered by open-source software:");
-	wxFont openSourceFont = openSource->GetFont();
+	wxStaticText* openSource{ new wxStaticText(panel, wxID_ANY,
+		"Powered by open-source software:") };
+	wxFont openSourceFont{ openSource->GetFont() };
 	openSourceFont.SetPointSize(14);
 	openSource->SetFont(openSourceFont);
 
-	wxHyperlinkCtrl* cpp = new wxHyperlinkCtrl(panel, wxID_ANY,
-		"C++ Programming Language", "https://isocpp.org/");
-	wxHyperlinkCtrl* cpr = new wxHyperlinkCtrl(panel, wxID_ANY,
-		"C++ Requests: Curl for People", "https://github.com/libcpr/cpr");
-	wxHyperlinkCtrl* json = new wxHyperlinkCtrl(panel, wxID_ANY,
-		"JSON for Modern C++", "https://github.com/nlohmann/json");
-	wxHyperlinkCtrl* wxWidgets = new wxHyperlinkCtrl(panel, wxID_ANY,
-		"wxWidgets", "https://www.wxwidgets.org/");
+	wxHyperlinkCtrl* cpp{ new wxHyperlinkCtrl(panel, wxID_ANY,
+		"C++ Programming Language", "https://isocpp.org/") };
+	wxHyperlinkCtrl* cpr{ new wxHyperlinkCtrl(panel, wxID_ANY,
+		"C++ Requests: Curl for People", "https://github.com/libcpr/cpr") };
+	wxHyperlinkCtrl* json{ new wxHyperlinkCtrl(panel, wxID_ANY,
+		"JSON for Modern C++", "https://github.com/nlohmann/json") };
+	wxHyperlinkCtrl* wxWidgets{ new wxHyperlinkCtrl(panel, wxID_ANY,
+		"wxWidgets", "https://www.wxwidgets.org/") };
 
-	wxStaticText* noaffil = new wxStaticText(panel, wxID_ANY,
+	wxStaticText* noaffil{ new wxStaticText(panel, wxID_ANY,
 		"Not affiliated with, associated with, authorized by, endorsed by,"
 		" or in any way officially connected with Esri.\n"
 		"Esri, as well as related names, marks, emblems and images are"
 		" registered trademarks of their respective owners.",
-		wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE_HORIZONTAL);
-	wxFont noaffilFont = noaffil->GetFont();
+		wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE_HORIZONTAL) };
+	wxFont noaffilFont{ noaffil->GetFont() };
 	noaffilFont.SetPointSize(8);
 	noaffil->SetFont(noaffilFont);
 

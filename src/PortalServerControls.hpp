@@ -3,6 +3,7 @@
 
 #include "Configuration.hpp"
 #include "Constants.hpp"
+#include "Logging.hpp"
 
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
@@ -61,6 +62,7 @@ public:
 
 private:
 	Configuration& m_configuration;
+
 	int m_countCurrent{ 0 };
 	int m_countStarted{ 0 };
 	int m_countStopped{ 0 };

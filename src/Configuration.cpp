@@ -14,9 +14,9 @@ void Configuration::createDirectory()
     }
     catch (std::filesystem::filesystem_error)
     {
-        wxMessageDialog* directoryError = new wxMessageDialog(NULL,
+        wxMessageDialog* directoryError{ new wxMessageDialog(NULL,
             Message::directoryError,
-            "Directory Error", wxOK | wxICON_ERROR);
+            "Directory Error", wxOK | wxICON_ERROR) };
         directoryError->ShowModal();
     }
 }
@@ -44,7 +44,7 @@ std::string Configuration::encrypt(std::string&& string)
 
 void Configuration::enterCredentials()
 {
-    EnterCredentials* credentialsWindow = new EnterCredentials(NULL, *this);
+    EnterCredentials* credentialsWindow{ new EnterCredentials(NULL, *this) };
     credentialsWindow->ShowModal();
 }
 
@@ -161,10 +161,10 @@ void Configuration::readConfig()
             }
             else
             {
-                wxMessageDialog* fileError = new wxMessageDialog(NULL,
+                wxMessageDialog* fileError{ new wxMessageDialog(NULL,
                     "Config File Error",
                     "Unable to open configuration file.",
-                    wxOK | wxICON_ERROR);
+                    wxOK | wxICON_ERROR) };
                 fileError->ShowModal();
             }
         }
@@ -241,9 +241,9 @@ void Configuration::writeConfig(
     }
     else
     {
-        wxMessageDialog* fileError = new wxMessageDialog(NULL,
+        wxMessageDialog* fileError{ new wxMessageDialog(NULL,
             Message::fileError,
-            "Config File Error", wxOK | wxICON_ERROR);
+            "Config File Error", wxOK | wxICON_ERROR) };
         fileError->ShowModal();
         return;
     }

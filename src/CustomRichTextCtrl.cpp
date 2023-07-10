@@ -10,16 +10,16 @@ void CustomRichTextCtrl::findNotFound(wxFindReplaceDialog* findTextWindow,
 {
 	if (this->HasSelection())
 	{
-		wxMessageDialog* endReached = new wxMessageDialog(findTextWindow,
+		wxMessageDialog* endReached{ new wxMessageDialog(findTextWindow,
 			"Search reached end.",
-			"Not Found", wxOK | wxICON_ERROR);
+			"Not Found", wxOK | wxICON_ERROR) };
 		endReached->ShowModal();
 	}
 	else
 	{
-		wxMessageDialog* notFound = new wxMessageDialog(findTextWindow,
+		wxMessageDialog* notFound{ new wxMessageDialog(findTextWindow,
 			"Can't find text: \"" + searchString + "\"",
-			"Not Found", wxOK | wxICON_ERROR);
+			"Not Found", wxOK | wxICON_ERROR) };
 		notFound->ShowModal();
 	}
 }

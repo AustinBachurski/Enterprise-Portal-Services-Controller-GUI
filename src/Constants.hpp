@@ -77,8 +77,8 @@ namespace Message
 
 	inline const wxString gathering{ "Gathering current server status." };
 
-	inline const nlohmann::json jsonNothingToDo = nlohmann::json::parse(
-		R"({"status": "Services are already at requested state."})");
+	inline const nlohmann::json jsonNothingToDo{ nlohmann::json::parse(
+		R"({"status": "Services are already at requested state."})") };
 
 	inline const wxString noResponse{
 		"No response was received from the server, is your url correct?\n" };
@@ -88,8 +88,8 @@ namespace Message
 		"You can change your credentials by going to\n"
 		"File->Change Enterprise Portal Credentials." };
 
-	inline const nlohmann::json success = nlohmann::json::parse(
-		R"({"status": "success"})");
+	inline const nlohmann::json success{ nlohmann::json::parse(
+		R"({"status": "success"})") };
 
 	inline const wxString tokenError{
 		"An error occurred while attempting to acquire a token.\n\n" };

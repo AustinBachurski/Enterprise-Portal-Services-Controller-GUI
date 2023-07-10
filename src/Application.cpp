@@ -4,7 +4,7 @@ wxIMPLEMENT_APP(Launcher); // int main()
 
 bool Launcher::OnInit()
 {
-	Application* appWindow = new Application("Enterprise Portal Services Controller");
+	Application* appWindow{ new Application("Enterprise Portal Services Controller") };
 	appWindow->Show();
 	return true;
 }
@@ -18,24 +18,24 @@ Application::Application(const std::string title)
 {
 	SetSize(wxRect(m_configuration.getWindowSettings()));
 
-	wxPanel* panel = new wxPanel(
-		this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS);
+	wxPanel* panel{ new wxPanel(
+		this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS) };
 	panel->Bind(wxEVT_CHAR_HOOK, &Application::keyboardShortcuts, this);
 
 	// BEGIN MENU BAR
-	wxMenuBar* menuBar = new wxMenuBar();
+	wxMenuBar* menuBar{ new wxMenuBar() };
 
-	wxMenu* fileMenu = new wxMenu();
+	wxMenu* fileMenu{ new wxMenu() };
 
-	wxMenuItem* credentials = fileMenu->Append(
+	wxMenuItem* credentials{ fileMenu->Append(
 		MenuID::changeCredentials,
-		"Change Enterprise Portal Credentials");
+		"Change Enterprise Portal Credentials") };
 	credentials->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_INFORMATION, wxART_MENU));
 
-	wxMenu* changeMethodSubmenu = new wxMenu();
-	wxMenuItem* changeMethod = fileMenu->AppendSubMenu(
-		changeMethodSubmenu, "Change Server Command Method");
+	wxMenu* changeMethodSubmenu{ new wxMenu() };
+	wxMenuItem* changeMethod{ fileMenu->AppendSubMenu(
+		changeMethodSubmenu, "Change Server Command Method") };
 	changeMethod->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_WARNING, wxART_MENU));
 	changeMethod->SetSubMenu(changeMethodSubmenu);
@@ -65,110 +65,110 @@ Application::Application(const std::string title)
 
 	fileMenu->AppendSeparator();
 
-	wxMenuItem* update = fileMenu->Append(
+	wxMenuItem* update{ fileMenu->Append(
 		MenuID::updateFolders,
-		"Refresh Folder and Service Information");
+		"Refresh Folder and Service Information") };
 	update->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_REFRESH, wxART_MENU));
 
 	fileMenu->AppendSeparator();
 
-	wxMenuItem* quit = fileMenu->Append(
+	wxMenuItem* quit{ fileMenu->Append(
 		MenuID::quit,
-		"Quit");
+		"Quit") };
 	quit->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_QUIT, wxART_MENU));
 
-	wxMenu* statusMenu = new wxMenu();
+	wxMenu* statusMenu{ new wxMenu() };
 
-	wxMenuItem* find = statusMenu->Append(
+	wxMenuItem* find{ statusMenu->Append(
 		MenuID::find,
-		"Find");
+		"Find") };
 	find->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_FIND, wxART_MENU));
 
-	wxMenuItem* copySelection = statusMenu->Append(
+	wxMenuItem* copySelection{ statusMenu->Append(
 		MenuID::copySelection,
-		"Copy Selection");
+		"Copy Selection") };
 	copySelection->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_COPY, wxART_MENU));
 
-	wxMenuItem* copyAll = statusMenu->Append(
+	wxMenuItem* copyAll{ statusMenu->Append(
 		MenuID::copyAll,
-		"Copy Server Status");
+		"Copy Server Status") };
 	copyAll->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_COPY, wxART_MENU));
 
 	statusMenu->AppendSeparator();
 
-	wxMenuItem* refreshStatus = statusMenu->Append(
+	wxMenuItem* refreshStatus{ statusMenu->Append(
 		MenuID::refresh,
-		"Refresh Server Status");
+		"Refresh Server Status") };
 	refreshStatus->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_REFRESH, wxART_MENU));
 
 	statusMenu->AppendSeparator();
 
-	wxMenuItem* showAll = statusMenu->Append(
+	wxMenuItem* showAll{ statusMenu->Append(
 		MenuID::showAll,
-		"Show All Services");
+		"Show All Services") };
 	showAll->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_REPORT_VIEW, wxART_MENU));
 
-	wxMenuItem* showStarted = statusMenu->Append(
+	wxMenuItem* showStarted{ statusMenu->Append(
 		MenuID::showStarted,
-		"Show Only Started Services");
+		"Show Only Started Services") };
 	showStarted->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_GO_FORWARD, wxART_MENU));
 
-	wxMenuItem* showStopped = statusMenu->Append(
+	wxMenuItem* showStopped{ statusMenu->Append(
 		MenuID::showStopped,
-		"Show Only Stopped Services");
+		"Show Only Stopped Services") };
 	showStopped->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_STOP, wxART_MENU));
 
-	wxMenu* controlsMenu = new wxMenu();
+	wxMenu* controlsMenu{ new wxMenu() };
 
-	wxMenu* exportJsonSubMenu = new wxMenu();
-	wxMenuItem* exportJson = controlsMenu->AppendSubMenu(
-		exportJsonSubMenu, "Export Batch Command as JSON");
+	wxMenu* exportJsonSubMenu{ new wxMenu() };
+	wxMenuItem* exportJson{ controlsMenu->AppendSubMenu(
+		exportJsonSubMenu, "Export Batch Command as JSON") };
 	exportJson->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_GO_DIR_UP, wxART_MENU));
 	exportJson->SetSubMenu(exportJsonSubMenu);
 
 	controlsMenu->AppendSeparator();
 
-	wxMenuItem* exportStart = exportJsonSubMenu->Append(
+	wxMenuItem* exportStart{ exportJsonSubMenu->Append(
 		MenuID::exportStart,
-		"Export Start All Command");
+		"Export Start All Command") };
 	exportStart->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_GO_FORWARD, wxART_MENU));
 
-	wxMenuItem* exportStop = exportJsonSubMenu->Append(
+	wxMenuItem* exportStop{ exportJsonSubMenu->Append(
 		MenuID::exportStop,
-		"Export Stop All Command");
+		"Export Stop All Command") };
 	exportStop->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_STOP, wxART_MENU));
 
-	wxMenuItem* startAll = controlsMenu->Append(
+	wxMenuItem* startAll{ controlsMenu->Append(
 		MenuID::start,
-		"Start All Map Services");
+		"Start All Map Services") };
 	startAll->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_GO_FORWARD, wxART_MENU));
 
 	controlsMenu->AppendSeparator();
 
-	wxMenuItem* stopAll = controlsMenu->Append(
+	wxMenuItem* stopAll{ controlsMenu->Append(
 		MenuID::stop,
-		"Stop All Map Services");
+		"Stop All Map Services") };
 	stopAll->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_STOP, wxART_MENU));
 
-	wxMenu* helpMenu = new wxMenu();
+	wxMenu* helpMenu{ new wxMenu() };
 
-	wxMenuItem* about = helpMenu->Append(
+	wxMenuItem* about{ helpMenu->Append(
 		MenuID::about,
-		"About");
+		"About") };
 	about->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_QUESTION, wxART_MENU));
 
@@ -183,57 +183,57 @@ Application::Application(const std::string title)
 
 	// BEGIN TEXT BOX ITEMS
 	m_statusText = new CustomRichTextCtrl(panel, wxRE_READONLY);
-	wxBoxSizer* textSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* textSizer{ new wxBoxSizer(wxHORIZONTAL) };
 	textSizer->Add(m_statusText, 1, wxEXPAND | wxALL);
 	panel->SetSizerAndFit(textSizer);
 
 	displayWelcomeMessage();
 
-	wxMenu* contextStatusMenu = new wxMenu();
+	wxMenu* contextStatusMenu{ new wxMenu() };
 
-	auto contextfind = contextStatusMenu->Append(
+	wxMenuItem* contextfind{ contextStatusMenu->Append(
 		MenuID::find,
-		"Find");
+		"Find") };
 	contextfind->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_FIND, wxART_MENU));
 
-	auto contextcopySelection = contextStatusMenu->Append(
+	wxMenuItem* contextcopySelection{ contextStatusMenu->Append(
 		MenuID::copySelection,
-		"Copy Selection");
+		"Copy Selection") };
 	contextcopySelection->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_COPY, wxART_MENU));
 
-	auto contextcopyAll = contextStatusMenu->Append(
+	wxMenuItem* contextcopyAll{ contextStatusMenu->Append(
 		MenuID::copyAll,
-		"Copy Complete Server Status");
+		"Copy Complete Server Status") };
 	contextcopyAll->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_COPY, wxART_MENU));
 
 	contextStatusMenu->AppendSeparator();
 
-	auto contextRefresh = contextStatusMenu->Append(
+	wxMenuItem* contextRefresh{ contextStatusMenu->Append(
 		MenuID::refresh,
-		"Refresh Server Status");
+		"Refresh Server Status") };
 	contextRefresh->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_REFRESH, wxART_MENU));
 
 	contextStatusMenu->AppendSeparator();
 
-	auto contextShowAll = contextStatusMenu->Append(
+	wxMenuItem* contextShowAll{ contextStatusMenu->Append(
 		MenuID::showAll,
-		"Show All Services");
+		"Show All Services") };
 	contextShowAll->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_REPORT_VIEW, wxART_MENU));
 
-	auto contextShowStarted = contextStatusMenu->Append(
+	wxMenuItem* contextShowStarted{ contextStatusMenu->Append(
 		MenuID::showStarted,
-		"Show Only Started Services");
+		"Show Only Started Services") };
 	contextShowStarted->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_GO_FORWARD, wxART_MENU));
 
-	auto contextShowStopped = contextStatusMenu->Append(
+	wxMenuItem* contextShowStopped{ contextStatusMenu->Append(
 		MenuID::showStopped,
-		"Show Only Stopped Services");
+		"Show Only Stopped Services") };
 	contextShowStopped->SetBitmap(wxArtProvider::GetBitmap(
 		wxART_STOP, wxART_MENU));
 
@@ -243,21 +243,21 @@ Application::Application(const std::string title)
 
 Application::~Application()
 {
-	wxRect windowSettings = GetRect();
+	wxRect windowSettings{ GetRect() };
 	m_configuration.updateConfigSettings(
 		windowSettings, m_serverCommandMethod);
 }
 
 void Application::areYouSure(const std::string_view command)
 {
-	wxMessageDialog* youSure = new wxMessageDialog(
+	wxMessageDialog* youSure{ new wxMessageDialog(
 		this,
 		(command == Command::START
 			? "START all services on the server?"
 			: "STOP all services on the server?")
 		+ Message::durationWarning,
 		"Are You Sure?",
-		wxYES_NO);
+		wxYES_NO) };
 
 	if (youSure->ShowModal() == wxID_YES)
 	{
@@ -507,8 +507,8 @@ void Application::displayStatusStopped()
 std::string Application::elapsedTimeMessage(
 	const int duration, const std::string& response)
 {
-	int minutes = duration / 60;
-	int seconds = duration % 60;
+	int minutes{ duration / 60 };
+	int seconds{ duration % 60 };
 
 	std::string message{
 		"Completed in "
@@ -559,8 +559,8 @@ void Application::displayWelcomeMessage()
 
 void Application::enterCredentials()
 {
-	EnterCredentials* credentialsWindow =
-		new EnterCredentials(this, m_configuration);
+	EnterCredentials* credentialsWindow{
+		new EnterCredentials(this, m_configuration) };
 	credentialsWindow->ShowModal();
 }
 
@@ -571,27 +571,29 @@ void Application::exportJson(MenuID mode)
 	std::string jsonString{ m_portalServerControl->generateJson(
 		mode == MenuID::exportStart ? Command::START : Command::STOP) };
 
-	auto isUsable = [](const std::string& jsonString) -> bool
-	{ return jsonString.find("type") != std::string::npos; };
+	auto isValid{ [](const std::string& jsonString) -> bool
+	{ return jsonString.find("type") != std::string::npos; } };
 
 	if (wxTheClipboard->Open())
 	{
-		wxTheClipboard->SetData(new wxTextDataObject(isUsable(jsonString)
-			? jsonString : "Services are already at requested state."));
+		wxTheClipboard->SetData(new wxTextDataObject(
+			isValid(jsonString)
+			? jsonString
+			: "Services are already at requested state."));
 		wxTheClipboard->Close();
 
-		wxMessageDialog* copied = new wxMessageDialog(this,
+		wxMessageDialog* copied{ new wxMessageDialog(this,
 			"JSON loaded into clipboard.",
 			"Copied",
-			wxOK | wxICON_INFORMATION);
+			wxOK | wxICON_INFORMATION) };
 		copied->ShowModal();
 	}
 	else
 	{
-		wxMessageDialog* copyError = new wxMessageDialog(this,
+		wxMessageDialog* copyError{ new wxMessageDialog(this,
 			"Unable to open clipboard.",
 			"Error",
-			wxOK | wxICON_INFORMATION);
+			wxOK | wxICON_INFORMATION) };
 		copyError->ShowModal();
 	}
 }
@@ -627,9 +629,9 @@ void Application::keyboardShortcuts(wxKeyEvent& event)
 	}
 	else
 	{
-		wxMessageDialog* noCred = new wxMessageDialog(this,
+		wxMessageDialog* noCred{ new wxMessageDialog(this,
 			Message::credentialsRequired,
-			"Credentials Required", wxOK | wxICON_INFORMATION);
+			"Credentials Required", wxOK | wxICON_INFORMATION) };
 		noCred->ShowModal();
 	}
 }
@@ -667,9 +669,9 @@ void Application::menuAction(wxCommandEvent& event)
 			m_menuModeSequential->Check(true);
 			m_menuModeBatch->Check(false);
 
-			wxMessageDialog* sequentialSet = new wxMessageDialog(this,
+			wxMessageDialog* sequentialSet{ new wxMessageDialog(this,
 				"Server command mode set to 'Sequential' mode.",
-				"Command Mode Changed", wxOK | wxICON_INFORMATION);
+				"Command Mode Changed", wxOK | wxICON_INFORMATION) };
 			sequentialSet->ShowModal();
 			break;
 		}
@@ -679,9 +681,9 @@ void Application::menuAction(wxCommandEvent& event)
 			m_menuModeBatch->Check(true);
 			m_menuModeSequential->Check(false);
 
-			wxMessageDialog* batchSet = new wxMessageDialog(this,
+			wxMessageDialog* batchSet{ new wxMessageDialog(this,
 				"Server command mode set to 'Single Batch' mode.",
-				"Command Mode Changed", wxOK | wxICON_INFORMATION);
+				"Command Mode Changed", wxOK | wxICON_INFORMATION) };
 			batchSet->ShowModal();
 			break;
 		}
@@ -770,9 +772,9 @@ void Application::menuAction(wxCommandEvent& event)
 			showAboutWindow();
 			break;
 		default:
-			wxMessageDialog* noCred = new wxMessageDialog(this,
+			wxMessageDialog* noCred{ new wxMessageDialog(this,
 				Message::credentialsRequired,
-				"Credentials Required", wxOK | wxICON_INFORMATION);
+				"Credentials Required", wxOK | wxICON_INFORMATION) };
 			noCred->ShowModal();
 			break;
 		}
@@ -812,9 +814,9 @@ void Application::sendBatchCommand(const std::string_view command)
 	std::chrono::time_point start{ std::chrono::system_clock::now() };
 
 	std::promise<nlohmann::json> promise;
-	std::shared_future<nlohmann::json> future = promise.get_future();
+	std::shared_future<nlohmann::json> future{ promise.get_future() };
 	std::thread sendServerCommand(
-		[this, promise = std::move(promise), command]() mutable
+		[this, promise{ std::move(promise) }, command]() mutable
 		{
 			m_portalServerControl->sendBatchServerCommand(
 				std::move(promise), command);
@@ -839,15 +841,15 @@ void Application::sendBatchCommand(const std::string_view command)
 	}
 	progress.Hide();
 
-	nlohmann::json result = future.get();
+	nlohmann::json result{ future.get() };
 	std::chrono::time_point finish{ std::chrono::system_clock::now() };
 	auto elapsedTime =
 		std::chrono::duration_cast<std::chrono::seconds>(finish - start);
 	displayStatusAll();
 
-	wxMessageDialog* done = new wxMessageDialog(this,
+	wxMessageDialog* done{ new wxMessageDialog(this,
 		elapsedTimeMessage(elapsedTime.count(), result["status"].get<std::string>()),
-		"Operation Complete", wxOK | wxICON_INFORMATION);
+		"Operation Complete", wxOK | wxICON_INFORMATION) };
 	done->ShowModal();
 }
 
@@ -871,9 +873,9 @@ void Application::sendSequentialCommand(const std::string_view command)
 		wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME);
 
 	std::promise<nlohmann::json> promise;
-	std::shared_future<nlohmann::json> future = promise.get_future();
+	std::shared_future<nlohmann::json> future{ promise.get_future() };
 	std::thread sendServerCommand(
-		[this, promise = std::move(promise), command, &state]() mutable
+		[this, promise{ std::move(promise) }, command, &state]() mutable
 		{
 			m_portalServerControl->sendSequentialServerCommands(
 				std::move(promise), command, state);
@@ -888,29 +890,29 @@ void Application::sendSequentialCommand(const std::string_view command)
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	progress.Hide();
-	nlohmann::json result = future.get();
+	nlohmann::json result{ future.get() };
 
 	std::chrono::time_point finish{ std::chrono::system_clock::now() };
 	auto elapsedTime =
 		std::chrono::duration_cast<std::chrono::seconds>(finish - start);
 	displayStatusAll();
 
-	wxMessageDialog* done = new wxMessageDialog(this,
+	wxMessageDialog* done{ new wxMessageDialog(this,
 		elapsedTimeMessage(elapsedTime.count(), result["status"].get<std::string>()),
-		"Operation Complete", wxOK | wxICON_INFORMATION);
+		"Operation Complete", wxOK | wxICON_INFORMATION) };
 	done->ShowModal();
 }
 
 void Application::showAboutWindow()
 {
-	AboutWindow* aboutWindow = new AboutWindow(this);
+	AboutWindow* aboutWindow{ new AboutWindow(this) };
 	aboutWindow->Show();
 }
 
 void Application::showFindTextPrompt()
 {
-	wxFindReplaceDialog* findTextWindow = new wxFindReplaceDialog(
-		this, &m_findOptions, "Find");
+	wxFindReplaceDialog* findTextWindow{ new wxFindReplaceDialog(
+		this, &m_findOptions, "Find") };
 
 	// First click of "Find Next".
 	findTextWindow->Bind(wxEVT_FIND,
@@ -932,7 +934,7 @@ void Application::showFindTextPrompt()
 void Application::updateCredentials()
 {
 	std::promise<void> promise;
-	std::future<void> future = promise.get_future();
+	std::future<void> future{ promise.get_future() };
 
 	wxGenericProgressDialog progress(
 		"Updating...",
@@ -942,7 +944,7 @@ void Application::updateCredentials()
 		wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 	progress.Show();
 
-	std::thread update([this, promise = std::move(promise)]() mutable
+	std::thread update([this, promise{ std::move(promise) }]() mutable
 		{
 			m_portalServerControl.reset(new PortalServerControls(m_configuration));
 			promise.set_value_at_thread_exit();
