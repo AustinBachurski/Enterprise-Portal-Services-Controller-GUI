@@ -88,9 +88,6 @@ namespace Message
 		"You can change your credentials by going to\n"
 		"File->Change Enterprise Portal Credentials." };
 
-	inline const nlohmann::json success{ nlohmann::json::parse(
-		R"({"status": "success"})") };
-
 	inline const wxString tokenError{
 		"An error occurred while attempting to acquire a token.\n\n" };
 

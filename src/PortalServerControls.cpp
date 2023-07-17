@@ -414,7 +414,9 @@ void PortalServerControls::sendSequentialServerCommands(
 						})));
 			});
 
-		while (!results.empty())
+		int retryCount{ 0 };
+		int maxRetries{ 10 };
+		while (!results.empty() && retryCount < maxRetries)
 		{
 			for (const auto& urlAndServerResponse : results)
 			{
@@ -439,6 +441,7 @@ void PortalServerControls::sendSequentialServerCommands(
 			// which are not at the requested state, send commands again.
 			if (!results.empty())
 			{
+				++retryCount;
 				buffer.clear();
 
 				for (const auto& urlAndServerResponse : results)
@@ -454,7 +457,11 @@ void PortalServerControls::sendSequentialServerCommands(
 					[&](const std::string& targetUrl)
 					{
 						std::lock_guard<std::mutex> guard(m_mutex);
-						++state.progressValue;
+
+						if (state.progressValue < seventyFivePercentProgress)
+						{
+							++state.progressValue;
+						}
 
 						results.emplace_back(URLandServerResponse(targetUrl,
 							std::async(std::launch::async,
@@ -474,7 +481,18 @@ void PortalServerControls::sendSequentialServerCommands(
 		}
 		state.progressValue = seventyFivePercentProgress;
 		updateStatus(state);
-		promise.set_value(Message::success);
+		
+		if (retryCount < maxRetries)
+		{
+			promise.set_value(nlohmann::json::parse("{\"status\": \"success\"}"));
+		}
+		else
+		{
+			promise.set_value(
+				nlohmann::json::parse("{\"status\": \"Some services failed to start after "
+				+ std::to_string(maxRetries)
+				+ " attempts!\"}"));
+		}
 		state.working = false;
 		return;
 	}

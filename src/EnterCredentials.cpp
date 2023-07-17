@@ -21,19 +21,19 @@ EnterCredentials::EnterCredentials(
 
     m_urlEntryBox = new wxTextCtrl(urlPanel, wxID_ANY,
         "i.e. https://maps.city.name.state.us/",
-        wxDefaultPosition, wxSize(300, -1));
+        wxDefaultPosition, wxSize(250, -1));
 
     wxStaticText* usernamePrompt{ new wxStaticText(usernamePanel, wxID_ANY,
         "Enterprise Portal Username", wxDefaultPosition, wxDefaultSize) };
 
     m_usernameEntryBox = new wxTextCtrl(usernamePanel, wxID_ANY,
-        wxEmptyString, wxDefaultPosition, wxSize(300, -1));
+        wxEmptyString, wxDefaultPosition, wxSize(250, -1));
 
     wxStaticText* passwordPrompt{ new wxStaticText(passwordPanel, wxID_ANY,
         "Enterprise Portal Password", wxDefaultPosition, wxDefaultSize) };
 
     m_passwordEntryBox = new wxTextCtrl(passwordPanel,wxID_ANY,
-        wxEmptyString, wxDefaultPosition, wxSize(300, -1),
+        wxEmptyString, wxDefaultPosition, wxSize(250, -1),
         wxTE_PASSWORD | wxTE_PROCESS_ENTER);
     m_passwordEntryBox->Bind(wxEVT_TEXT_ENTER,
         [this, &configuration](wxCommandEvent& event)
