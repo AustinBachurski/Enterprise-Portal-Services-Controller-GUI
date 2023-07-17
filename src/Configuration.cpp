@@ -217,7 +217,7 @@ void Configuration::writeConfig(
     const std::string password)
 {
     // Open file for writing, discard existing data.
-    std::ofstream configFile(m_configFile, std::ios::out, std::ios::trunc);
+    std::ofstream configFile(m_configFile, std::ios::out | std::ios::trunc);
     if (configFile.is_open())
     {
         configFile
