@@ -299,7 +299,7 @@ void PortalServerControls::retrieveStatus(
 			{
 				++m_countStarted;
 			}
-			else if (status.get<std::string>() == "STOPPED")
+			else
 			{
 				++m_countStopped;
 			}
@@ -490,7 +490,7 @@ void PortalServerControls::sendSequentialServerCommands(
 		{
 			promise.set_value(
 				nlohmann::json::parse("{\"status\": \"Some services failed to start after "
-				+ std::to_string(maxRetries)
+				+ std::to_string(retryCount)
 				+ " attempts!\"}"));
 		}
 		state.working = false;

@@ -340,7 +340,8 @@ void Application::displayStatusAll()
 		m_statusText->EndBold();
 		for (const auto& [service, status] : services)
 		{
-			if (status == "STARTED") // Green Text if STARTED.
+			using namespace Command;
+			if (status == START) // Green Text if STARTED.
 			{
 				m_statusText->BeginTextColour({ 0, 139, 0 });
 				m_statusText->WriteText("\t" + service + " - " + status);
@@ -419,7 +420,8 @@ void Application::displayStatusStarted()
 		m_statusText->EndBold();
 		for (const auto& [service, status] : services)
 		{
-			if (status == "STARTED") // Green Text if STARTED.
+			using namespace Command;
+			if (status == START) // Green Text if STARTED.
 			{
 				m_statusText->BeginTextColour({ 0, 139, 0 });
 				m_statusText->WriteText("\t" + service + " - " + status);
@@ -492,7 +494,8 @@ void Application::displayStatusStopped()
 		m_statusText->Newline();
 		for (const auto& [service, status] : services)
 		{
-			if (status == "STOPPED") // Red Text if STOPPED.
+			using namespace Command;
+			if (status != START) // Red Text if STOPPED.
 			{
 				m_statusText->BeginTextColour({ 255, 0, 0 });
 				m_statusText->WriteText("\t" + service + " - " + status);

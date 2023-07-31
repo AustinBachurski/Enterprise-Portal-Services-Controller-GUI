@@ -3,7 +3,7 @@
 EnterCredentials::EnterCredentials(
     wxWindow* parent,
     Configuration& configuration)
-    : wxDialog(parent, wxID_ANY, "Enter Enterprise Portal Information") 
+    : wxDialog(parent, wxID_ANY, "Enter Enterprise Portal Information")
 {
     wxPanel* urlPanel{ new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize) };
     wxPanel* usernamePanel{ new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize) };
@@ -32,21 +32,21 @@ EnterCredentials::EnterCredentials(
     wxStaticText* passwordPrompt{ new wxStaticText(passwordPanel, wxID_ANY,
         "Enterprise Portal Password", wxDefaultPosition, wxDefaultSize) };
 
-    m_passwordEntryBox = new wxTextCtrl(passwordPanel,wxID_ANY,
+    m_passwordEntryBox = new wxTextCtrl(passwordPanel, wxID_ANY,
         wxEmptyString, wxDefaultPosition, wxSize(300, -1),
         wxTE_PASSWORD | wxTE_PROCESS_ENTER);
     m_passwordEntryBox->Bind(wxEVT_TEXT_ENTER,
         [this, &configuration](wxCommandEvent& event)
-        { 
+        {
             configuration.m_updateCredentials = true;
             captureCredentials(event, configuration);
         });
-        
+
     wxButton* OkButton{ new wxButton(buttonPanel, wxID_OK,
         "OK", wxDefaultPosition, wxDefaultSize) };
-    OkButton->Bind(wxEVT_BUTTON, 
+    OkButton->Bind(wxEVT_BUTTON,
         [this, &configuration](wxCommandEvent& event)
-        { 
+        {
             configuration.m_updateCredentials = true;
             captureCredentials(event, configuration);
         });
@@ -83,7 +83,7 @@ EnterCredentials::EnterCredentials(
     passwordSizer->Add(passwordPrompt, 0, wxALIGN_CENTER_VERTICAL, 0);
     passwordSizer->Add(m_passwordEntryBox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 5);
     passwordPanel->SetSizerAndFit(passwordSizer);
-    
+
     buttonSizer->Add(0, 0, wxEXPAND);
     buttonSizer->Add(OkButton, 0, wxALIGN_CENTER | wxRIGHT, 5);
     buttonSizer->Add(cancelButton, 0, wxALIGN_CENTER);
