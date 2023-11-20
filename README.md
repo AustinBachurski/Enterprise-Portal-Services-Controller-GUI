@@ -76,6 +76,8 @@ Function tests resulted in the following times:
 
 ## Image Gallery
 
+*Some images have been changed to hide server details, the tool will clearly display the server URL, service directories, service names, and the current status for each service.*
+
 |File Menu|Server Status Menu|Server Controls Menu|
 |:-:|:-:|:-:|
 |![fileMenu](screenshots/file_menu.png) |![statusMenu](screenshots/status_menu.png)|![controlsMenu](screenshots/controls_menu.png)
