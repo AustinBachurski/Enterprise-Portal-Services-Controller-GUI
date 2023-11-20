@@ -65,7 +65,7 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
 
 ## Performance Metrics
 
-Tool was tested on an Enterprise Portal Server with an Intel Xeon Gold 5118 CPU, 32GB of memory, and a 500GB hard drive containing 80 services at the time of testing.
+Tool was tested on an Enterprise Portal Server with an Intel Xeon Gold 5118 CPU, 32GB of memory, and a 500GB hard drive containing 80 services.
 
 Function tests resulted in the following times:
 * Update status display - ```~1 second```
