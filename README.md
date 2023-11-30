@@ -3,7 +3,7 @@
 This application provides a simple, user-friendly interface that allows users to quickly view and control the state of services on an Esri Enterprise Portal Server.
 
 
-The directory, name, and state of every service on the server can be viewed via an easy to understand context menu and selectable text frame.  Users can start or stop all services at once with a couple clicks of the top menu bar, allowing server maintenance tasks or service modifications to be performed without wasting time clicking stop or start on dozens of services using ArcGIS Server Manager, or manually maintaining a long list of services in JSON format using ArcGIS Server Administrator Directory.
+The directory, name, and state of every service on the server can be viewed via an easy-to-understand context menu and selectable text frame.  Users can start or stop all services at once with a couple clicks of the top menu bar, allowing server maintenance tasks or service modifications to be performed without wasting time clicking stop or start on dozens of services using ArcGIS Server Manager, or manually maintaining a long list of services in JSON format using ArcGIS Server Administrator Directory.
 
 ## External Libraries
 
@@ -32,7 +32,7 @@ When opened, the tool checks for a ```config.ini``` file in a local ```config```
       ┃ ┗📜 config.ini
       ┗💻 Portal Services Controller.exe
 
- * If not found the tool will generate the ```config``` directory and ```config.ini``` file in it's local directory and prompt the user for an Enterprise Portal URL as well as credentials for the server.  Once entered, the tool applies a light encryption and writes the data to the ```config.ini``` file.
+ * If not found the tool will generate the ```config``` directory and ```config.ini``` file in its local directory and prompt the user for an Enterprise Portal URL as well as credentials for the server.  Once entered, the tool applies a light encryption and writes the data to the ```config.ini``` file.
 
      ![Credentials Prompt](screenshots/credentials_prompt.png)
 
@@ -48,7 +48,7 @@ Services on an Esri Enterprise Portal server can be controlled on two ways:
     1. ```Sequential Commands``` - where each service is individually commanded to start or stop.
     2. ```Single Batch Command``` - where a JSON list of services to start or stop is sent to the server in a single command.
 
->Testing has shown sequential control to provide signifigantly faster results, but performance may vary depending your hardware configuration.  Experiment with both and find what works best for you.
+>Testing has shown sequential control to provide significantly faster results, but performance may vary depending on your hardware configuration.  Experiment with both and find what works best for you.
 
 * ```Server Status``` menu has options for searching the status display, copying the status display, refreshing the server status, and filtering the data by service state.
 * ```Server Controls``` menu will spawn a confirmation popup and, if confirmed, send the appropriate command to the server.  You can also generate a JSON list of services to start or stop for use with the ArcGIS Server Administrator Directory.
@@ -76,7 +76,7 @@ Function tests resulted in the following times:
 
 ## Image Gallery
 
-*Some images have been changed to hide server details, the tool will clearly display the server URL, service directories, service names, and the current status for each service.*
+*Some images have been changed to hide server details, the tool will clearly display the server URL, service directories, service names, and the status for each service.*
 
 |File Menu|Server Status Menu|Server Controls Menu|
 |:-:|:-:|:-:|
